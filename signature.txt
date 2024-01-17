@@ -1,0 +1,1 @@
+we will save the output of: `shasum model.zip` here
