@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import random
+import sys
+# number of possible augmentations
 
 class ImageAugmentor:
     def __init__(self, image_path):
