@@ -82,7 +82,7 @@ def ft_distribution(target_path, totalVariants, plot_chart=False):
         if total_imgs < lowest:
             lowest = total_imgs
         images_related_to_subfolder = [os.path.split(img)[1] for img in all_images if subFolder in img]
-        head, _ = os.path.split(all_images[0])
+        head, _ = os.path.split(images_related_to_subfolder[0])
         result['image_paths'][subFolder] = {}
         result['image_paths'][subFolder]['images'] = images_related_to_subfolder
         result['image_paths'][subFolder]['path_to_folder'] = head
