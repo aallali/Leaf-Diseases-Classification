@@ -5,9 +5,12 @@ import matplotlib.pyplot as plt
 import os
 import random
 import sys
+import importlib  
+Distribution = importlib.import_module("000-Distribution")
+
+ft_distribution = Distribution.ft_distribution
 # number of possible augmentations
 augmentations_total = 7
-
 class ImageAugmentor:
     def __init__(self, image_path, export_folder):
         """
@@ -16,12 +19,12 @@ class ImageAugmentor:
         Args:
         - image_path (str): The path to the input image.
         """
-        self.image_name = self.get_image_name(image_path)
-        self.directory = os.path.dirname(image_path) 
-        self.export_directory = os.path.dirname(image_path) if export_folder is None else export_folder
-        self.image_extension = self.get_image_extension(image_path) 
-        self.image_path = image_path
-        self.image = cv2.imread(image_path)
+        self.image_path = image_path.replace('\\', '/')
+        self.image_name = self.get_image_name(self.image_path)
+        self.directory = os.path.dirname(self.image_path) 
+        self.export_directory = os.path.dirname(self.image_path) if export_folder is None else export_folder
+        self.image_extension = self.get_image_extension(self.image_path) 
+        self.image = cv2.imread(self.image_path)
         self.augmented_images = []  # Initialize with the original image
         
     def get_image_name(self, image_path):
@@ -151,8 +154,12 @@ class ImageAugmentor:
         
     def save_images(self):
         for image in self.augmented_images:
+            
             # imagePath = f"{self.image_name}_{image['name']}.{self.image_extenssion}"
             imagePath = f"{self.export_directory}/{self.image_name}_{image['name']}.{self.image_extension}"
+            if not os.path.exists(self.export_directory):
+                # If it doesn't exist, create it
+                os.makedirs(self.export_directory)
             cv2.imwrite(imagePath, image['image'])
             
     def some_augmentations(self, num_operations):
@@ -193,24 +200,52 @@ class ImageAugmentor:
 import sys
 import argparse
 
+
+ 
+
+
+
+def ft_augmentation(input_path, size, export_location):
+    if os.path.isfile(input_path):
+        # If the input is a file
+        augment_and_save_single_image(input_path, size,  export_location)
+
+    elif os.path.isdir(input_path):
+        # If the input is a directory
+        data = Distribution.ft_distribution(input_path.replace('\\', '/'), 7)
+        total_augmentations = data['total_augmentation_to_balance']
+     
+
+        for leaf in data['folder_statistics']:
+            print(leaf)
+            size = total_augmentations - data['folder_statistics'][leaf]
+            path_to_folder = data['image_paths'][leaf]['path_to_folder']
+            # export_path = f"{path_to_folder}"
+            export_path = f"./test/{leaf}"
+            imagePath = ''
+            files_generated = 0
+            
+            for image in data['image_paths'][leaf]['images']:
+                imagePath = f"{path_to_folder}/{image}"
+                num_augmentations = augmentations_total if size - files_generated > augmentations_total else max(size - files_generated,0)
+                files_generated += num_augmentations
+                augment_and_save_single_image(imagePath, num_augmentations, export_path)
+            
+    else:
+        print(f"Error: {input_path} is not a valid file or directory.")
+        sys.exit(1)
 def main():
     parser = argparse.ArgumentParser(description="Image Augmentation Script")
     parser.add_argument("input_path", help="Path to the image or directory")
     parser.add_argument("-size", type=int, default=augmentations_total, help="Number of augmentations to generate (default: 7 and max is number of images multiplied by 7)")
     parser.add_argument("-export_location", type=str, default=None, help="images export location (default: image or directory path)")
-
     args = parser.parse_args()
-    input_path = args.input_path
-    if os.path.isfile(input_path):
-        # If the input is a file
-        augment_and_save_single_image(input_path, args.size,  args.export_location)
+    input_path, size, export_location = [args.input_path, args.size, args.export_location]
+    
+    ft_augmentation(input_path, size, export_location)
+    
+    
 
-    elif os.path.isdir(input_path):
-        # If the input is a directory
-        augment_and_save_images_in_directory(input_path, args.size, args.export_location)
-    else:
-        print(f"Error: {input_path} is not a valid file or directory.")
-        sys.exit(1)
 
 def augment_and_save_single_image(image_path, size,  export_path):
     augmentor = ImageAugmentor(image_path, export_path)
