@@ -11,6 +11,7 @@ def build_image_stats(paths):
     stats = {}
 
     for path in paths:
+        path = path.replace("\\", "/")
         path = ft_remove_prefix(path, "../")
         path = ft_remove_prefix(path, "./")
         path = ft_remove_prefix(path, "/")
