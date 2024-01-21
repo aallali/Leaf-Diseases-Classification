@@ -84,7 +84,7 @@ def ft_distribution(target_path, totalVariants, plot_chart=False):
         images_related_to_subfolder = [img for img in all_images if subFolder in img]
         head, _ = os.path.split(images_related_to_subfolder[0])
         result['image_paths'][subFolder] = {}
-        result['image_paths'][subFolder]['images'] = [os.path.split(img)[1] for img in images_related_to_subfolder][:1]
+        result['image_paths'][subFolder]['images'] = [os.path.split(img)[1] for img in images_related_to_subfolder]
         result['image_paths'][subFolder]['path_to_folder'] = head
 
     totalToAugment = totalVariants * lowest
