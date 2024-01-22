@@ -4,14 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import random
-import sys
 import importlib
 import argparse
+
 Distribution = importlib.import_module("000-Distribution")
 
-ft_distribution = Distribution.ft_distribution
 # number of possible augmentations
-augmentations_total = 7
+AUGMENTATIONS_TOTAL = 7
 
 
 class ImageAugmentor:
@@ -30,7 +29,7 @@ class ImageAugmentor:
         self.image_extension = self.get_image_extension(self.image_path)
         self.image = cv2.imread(self.image_path)
         self.augmented_images = []  # Initialize with the original image
-        
+
     def get_image_name(self, image_path):
         """
         Extracts the image name from the path.
@@ -42,7 +41,7 @@ class ImageAugmentor:
         - str: The extracted image name.
         """
         return image_path.split('/')[-1].split('.')[0]
-    
+
     def get_image_extension(self, image_path):
         """
         Extracts the image extension from the path.
@@ -87,7 +86,7 @@ class ImageAugmentor:
         rotation_matrix[0][2] += (new_image_width/2) - centre_x
         rotation_matrix[1][2] += (new_image_height/2) - centre_y
 
-        rotating_image = cv2.warpAffine(self.image, rotation_matrix, 
+        rotating_image = cv2.warpAffine(self.image, rotation_matrix,
                                         (new_image_width, new_image_height))
         self.augmented_images.append({'name': 'Rotation',
                                       'image': rotating_image})
@@ -181,13 +180,15 @@ class ImageAugmentor:
         plt.show()
 
     def save_images(self):
-        for image in self.augmented_images:
-            imagePath = f"{self.export_directory}/\
-            {self.image_name}_{image['name']}.{self.image_extension}"
+        for augmentation in self.augmented_images:
+            imagePath = f"{self.export_directory}/"
+            imagePath += f"{self.image_name}_{augmentation['name']}"
+            imagePath += f".{self.image_extension}"
+
             if not os.path.exists(self.export_directory):
                 # If it doesn't exist, create it
                 os.makedirs(self.export_directory)
-            cv2.imwrite(imagePath, image['image'])
+            cv2.imwrite(imagePath, augmentation['image'])
 
     def some_augmentations(self, num_operations):
         available_operations = [
@@ -224,6 +225,37 @@ class ImageAugmentor:
                 operation(factor)
 
 
+def augment_and_save_single_image(image_path, size,  export_path):
+    augmentor = ImageAugmentor(image_path, export_path)
+    for i in range(size):
+        num_augmentations = AUGMENTATIONS_TOTAL
+        # Apply some random augmentations
+        augmentor.some_augmentations(num_augmentations)
+
+        # Save augmented images
+        augmentor.save_images()
+
+
+def augment_and_save_images_in_directory(directory_path, size, export_path):
+    image_files = [f for f in os.listdir(directory_path) if
+                   f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    files_generated = 0
+    for image_file in image_files:
+        image_path = os.path.join(directory_path, image_file)
+        augmentor = ImageAugmentor(image_path, export_path)
+
+        num_augmentations = AUGMENTATIONS_TOTAL if\
+            size - files_generated > AUGMENTATIONS_TOTAL else\
+            size - files_generated
+
+        # Apply some random augmentations
+        augmentor.some_augmentations(num_augmentations)
+
+        # Save augmented images
+        augmentor.save_images()
+        files_generated += num_augmentations
+
+
 def ft_augmentation(input_path, size, export_location):
     if os.path.isfile(input_path):
         # If the input is a file
@@ -242,25 +274,25 @@ def ft_augmentation(input_path, size, export_location):
             export_path = f"./test/{leaf}"
             imagePath = ''
             files_generated = 0
-            
+
             for image in data['image_paths'][leaf]['images']:
                 imagePath = f"{path_to_folder}/{image}"
-                num_augmentations = augmentations_total if\
-                    size - files_generated > augmentations_total else\
+                num_augmentations = AUGMENTATIONS_TOTAL if\
+                    size - files_generated > AUGMENTATIONS_TOTAL else\
                     max(size - files_generated, 0)
                 files_generated += num_augmentations
                 augment_and_save_single_image(imagePath, num_augmentations,
                                               export_path)
-
+        return True
     else:
         print(f"Error: {input_path} is not a valid file or directory.")
-        sys.exit(1)
+        return False
 
 
 def main():
     parser = argparse.ArgumentParser(description="Image Augmentation Script")
     parser.add_argument("input_path", help="Path to the image or directory")
-    parser.add_argument("-size", type=int, default=augmentations_total,
+    parser.add_argument("-size", type=int, default=AUGMENTATIONS_TOTAL,
                         help="Number of augmentations to generate\
                         (default: 7 and max is number of images multiplied\
                             by 7)")
@@ -272,37 +304,6 @@ def main():
                                          args.export_location]
 
     ft_augmentation(input_path, size, export_location)
-
-
-def augment_and_save_single_image(image_path, size,  export_path):
-    augmentor = ImageAugmentor(image_path, export_path)
-    for i in range(size):
-        num_augmentations = augmentations_total
-        # Apply some random augmentations
-        augmentor.some_augmentations(num_augmentations)
-
-        # Save augmented images
-        augmentor.save_images()
-
-
-def augment_and_save_images_in_directory(directory_path, size, export_path):
-    image_files = [f for f in os.listdir(directory_path) if
-                   f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-    files_generated = 0
-    for image_file in image_files:
-        image_path = os.path.join(directory_path, image_file)
-        augmentor = ImageAugmentor(image_path, export_path)
-
-        num_augmentations = augmentations_total if\
-            size - files_generated > augmentations_total else\
-            size - files_generated
-
-        # Apply some random augmentations
-        augmentor.some_augmentations(num_augmentations)
-
-        # Save augmented images
-        augmentor.save_images()
-        files_generated += num_augmentations
 
 
 if __name__ == "__main__":
