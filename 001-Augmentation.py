@@ -27,7 +27,6 @@ def augment_and_save_images_in_directory(directory_path, size, export_path):
     for image_file in image_files:
         image_path = os.path.join(directory_path, image_file)
         augmentor = ImageAugmentor(image_path, export_path)
-
         num_augmentations = AUGMENTATIONS_TOTAL if\
             size - files_generated > AUGMENTATIONS_TOTAL else\
             size - files_generated
@@ -41,19 +40,16 @@ def augment_and_save_images_in_directory(directory_path, size, export_path):
 
 
 def ft_augmentation(input_path, size, export_location):
-    # if os.path.isfile(input_path):
-    #     # If the input is a file
-    #     augment_and_save_single_image(input_path, size,  export_location)
-    if os.path.isdir(input_path):
+    if os.path.isfile(input_path):
+        # If the input is a file
+        augment_and_save_single_image(input_path, size,  export_location)
+    elif os.path.isdir(input_path):
         # If the input is a directory
         data = Distribution.ft_distribution(input_path.replace('\\', '/'), 7)
         total_augmentations = data['total_augmentation_to_balance']
 
         for leaf in data['folder_statistics']:
-            print('+++')
             print(leaf)
-            print('+++\n')
-            
             size = total_augmentations - data['folder_statistics'][leaf]
             path_to_folder = data['image_paths'][leaf]['path_to_folder']
             # export_path = f"{path_to_folder}"
@@ -61,23 +57,15 @@ def ft_augmentation(input_path, size, export_location):
             #     f"{path_to_folder}"
             imagePath = ''
             files_generated = 0
-            print('stats', data['folder_statistics'][leaf] )
-            print('total aug', total_augmentations)
-            print('size', size)
             for image in data['image_paths'][leaf]['images']:
                 imagePath = f"{path_to_folder}/{image}"
-                # print(imagePath)
                 num_augmentations = AUGMENTATIONS_TOTAL if\
                     size - files_generated >= AUGMENTATIONS_TOTAL else\
                     max(size - files_generated, 0)
-                files_generated += num_augmentations if num_augmentations else 0
-                # print("num of aug", num_augmentations)
-                # print("files generated", files_generated)
-                # print('-----')
+                files_generated += num_augmentations
                 if (num_augmentations):
                     augment_and_save_single_image(imagePath, num_augmentations,
-                                                export_location)
-            print('generated', files_generated)
+                                                  export_location)
         return True
     else:
         print(f"Error: {input_path} is not a valid file or directory.")
