@@ -14,8 +14,8 @@ def augment_and_save_single_image(image_path, size,  export_path):
     augmentor = ImageAugmentor(image_path, export_path)
     # Apply some random augmentations
     augmentor.some_augmentations(size)
-    print("augmented images", len(augmentor.augmented_images))
-    print(size)
+    # print("augmented images", len(augmentor.augmented_images))
+    # print(size)
     # Save augmented images
     augmentor.save_images()
 
@@ -44,7 +44,6 @@ def ft_augmentation(input_path, size, export_location):
     # if os.path.isfile(input_path):
     #     # If the input is a file
     #     augment_and_save_single_image(input_path, size,  export_location)
-
     if os.path.isdir(input_path):
         # If the input is a directory
         data = Distribution.ft_distribution(input_path.replace('\\', '/'), 7)
@@ -62,20 +61,23 @@ def ft_augmentation(input_path, size, export_location):
             #     f"{path_to_folder}"
             imagePath = ''
             files_generated = 0
-
+            print('stats', data['folder_statistics'][leaf] )
+            print('total aug', total_augmentations)
+            print('size', size)
             for image in data['image_paths'][leaf]['images']:
                 imagePath = f"{path_to_folder}/{image}"
-                print(imagePath)
+                # print(imagePath)
                 num_augmentations = AUGMENTATIONS_TOTAL if\
                     size - files_generated >= AUGMENTATIONS_TOTAL else\
                     max(size - files_generated, 0)
-                files_generated += num_augmentations + 1 if num_augmentations else 0
-                print("num of aug", num_augmentations)
-                print("files generated", files_generated)
-                print('-----')
+                files_generated += num_augmentations if num_augmentations else 0
+                # print("num of aug", num_augmentations)
+                # print("files generated", files_generated)
+                # print('-----')
                 if (num_augmentations):
                     augment_and_save_single_image(imagePath, num_augmentations,
                                                 export_location)
+            print('generated', files_generated)
         return True
     else:
         print(f"Error: {input_path} is not a valid file or directory.")

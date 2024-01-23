@@ -182,10 +182,10 @@ class ImageAugmentor:
             if not os.path.exists(self.export_directory):
                 # If it doesn't exist, create it
                 os.makedirs(self.export_directory)
-            if (self.copy_original_images):
-                print('saving original')
-                # cv2.imwrite(originalImagePath, self.image)
-            print('saveed')
+            # if (self.copy_original_images):
+            #     print('saving original')
+            #     # cv2.imwrite(originalImagePath, self.image)
+            # print('saveed')
             cv2.imwrite(imagePath, augmentation['image'])
 
     def some_augmentations(self, num_operations):
