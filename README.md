@@ -38,5 +38,16 @@ total_augmentation_to_balance : 2954
 root_path : ./dataset/Grape
 
 ```
-
 ![image](https://i.imgur.com/759ey5n.png)
+
+---
+## 🔬 Unit Tests:
+we tried to run as much unit tests as possible for program especially the helpers functions (`libft`)
+- run all tests:
+```commandline
+python3 -m unittest discover -s ./unittests -t .. -v
+```
+- run single test file:
+```commandline
+python3 -m unittest unittests/libft/test_ft_dict.py -v
+```
