@@ -120,7 +120,7 @@ def ft_distribution(target_path, totalVariants, plot_chart=False):
         }
     totalToAugment = totalVariants * lowest
 
-    result["folder_statistics"] = folders_stats
+    result["folder_statistics"] = end_level_folders_stats
     result["total_augmentation_to_balance"] = totalToAugment
 
     if plot_chart:
