@@ -124,7 +124,10 @@ def ft_distribution(target_path, totalVariants, plot_chart=False):
     result["total_augmentation_to_balance"] = totalToAugment
 
     if plot_chart:
-        plot_image_stats(title=parent_folder_name, stats=folders_stats)
+        plot_image_stats(
+            title=parent_folder_name,
+            stats=folders_stats
+        )
 
     return result
 
