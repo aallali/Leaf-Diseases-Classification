@@ -34,8 +34,14 @@ def ft_scrap_images(root_path):
 
     for item in items_list:
         if item[1] == "folder":
-            newPath = os.path.join(root_path, item[0])
-            all_images = np.append(all_images, ft_scrap_images(newPath))
+            newPath = os.path.join(
+                root_path, 
+                item[0]
+            )
+            all_images = np.append(
+                all_images,
+                ft_scrap_images(newPath)
+            )
         else:
             all_images = np.append(all_images, os.path.join(root_path, item[0]))
     return all_images
