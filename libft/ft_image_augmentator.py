@@ -205,20 +205,22 @@ class ImageAugmentor:
         # Apply the selected number of operations
         for operation in available_operations[:max(num_operations, 0)]:
             # Generate random parameters if needed for each operation
-            if operation.__name__ == 'rotate':
-                angle = random.uniform(-45, 45)
-                operation(angle)
-            elif operation.__name__ == 'blur':
-                operation()
-            elif operation.__name__ == 'scale':
-                operation(2)
-            elif operation.__name__ == 'brightness':
-                operation(60)
-            elif operation.__name__ == 'projection':
-                operation(0.8)
-            elif operation.__name__ == 'flip_vertical':
-                operation()
-            elif operation.__name__ == 'adjust_contrast':
-                factor = random.uniform(0.5, 2.0)
-                operation(factor)
-
+            match operation.__name__:
+                case "rotate":
+                    angle = random.uniform(-45, 45)
+                    operation(angle)
+                case 'blur':
+                    operation()
+                case  'scale':
+                    operation(2)
+                case  'brightness':
+                    operation(60)
+                case  'projection':
+                    operation(0.8)
+                case  'flip_vertical':
+                    operation()
+                case  'adjust_contrast':
+                    factor = random.uniform(0.5, 2.0)
+                    operation(factor)
+                case _:
+                    print(f"Undefined operation name [{operation.__name__}]")
