@@ -11,7 +11,7 @@ AUGMENTATIONS_TOTAL = 7
 
 
 def augment_and_save_single_image(image_path, size,  export_path):
-    augmentor = ImageAugmentor(image_path, export_path)
+    augmentor = ImageAugmentor(image_path, "./augmented_directory")
     # Apply some random augmentations
     augmentor.some_augmentations(size)
     # print("augmented images", len(augmentor.augmented_images))
@@ -50,14 +50,16 @@ def ft_augmentation(input_path, size, export_location):
 
         for leaf in data['folder_statistics']:
             print(leaf)
-            size = total_augmentations - data['folder_statistics'][leaf]
-            path_to_folder = data['image_paths'][leaf]['path_to_folder']
+            folderName = leaf[0]
+            totalImgs = leaf[1]
+            size = total_augmentations - totalImgs
+            path_to_folder = data['image_paths'][folderName]['path_to_folder']
             # export_path = f"{path_to_folder}"
             # export_path = f"./test/{leaf}" if export_location else\
             #     f"{path_to_folder}"
             imagePath = ''
             files_generated = 0
-            for image in data['image_paths'][leaf]['images']:
+            for image in data['image_paths'][folderName]['images']:
                 imagePath = f"{path_to_folder}/{image}"
                 num_augmentations = AUGMENTATIONS_TOTAL if\
                     size - files_generated >= AUGMENTATIONS_TOTAL else\
@@ -75,6 +77,9 @@ def ft_augmentation(input_path, size, export_location):
 def main():
     parser = argparse.ArgumentParser(description="Image Augmentation Script")
     parser.add_argument("input_path", help="Path to the image or directory")
+
+    # TODO: adapt script to handle 6 augmentations by default, 
+    # but the ones we have in PDF
     parser.add_argument("-size", type=int, default=AUGMENTATIONS_TOTAL,
                         help="Number of augmentations to generate\
                         (default: 7 and max is number of images multiplied\

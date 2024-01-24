@@ -1,8 +1,10 @@
+import shutil
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 import random
+from libft import ft_form_image_path
 
 
 class ImageAugmentor:
@@ -173,20 +175,32 @@ class ImageAugmentor:
         plt.show()
 
     def save_images(self):
-        for augmentation in self.augmented_images:
-            imagePath = f"{self.export_directory}/"
-            imagePath += f"{self.image_name}_{augmentation['name']}"
-            imagePath += f".{self.image_extension}"
-            originalImagePath = f"{self.directory}/"
-            originalImagePath += f"{self.image_name}.{self.image_extension}"
+        augmentedImageTuple = [
+            (aug["name"], aug["image"]) for aug in self.augmented_images
+        ]
+        orignalImage = (None, self.image)
+        images_combined = [orignalImage] + augmentedImageTuple
+
+        for imgMetaData in images_combined:
+            imgName = imgMetaData[0]
+            img = imgMetaData[1]
+
+            imagePath = ft_form_image_path(
+                destination=self.export_directory,
+                name=self.image_name,
+                suffix=imgName,
+                extension=self.image_extension
+            )
+
+            # TODO: redo this logic
+            if os.path.isdir("augmented_directory"):
+                shutil.rmtree("augmented_directory")
+
             if not os.path.exists(self.export_directory):
                 # If it doesn't exist, create it
                 os.makedirs(self.export_directory)
-            # if (self.copy_original_images):
-            #     print('saving original')
-            #     # cv2.imwrite(originalImagePath, self.image)
-            # print('saveed')
-            cv2.imwrite(imagePath, augmentation['image'])
+
+            cv2.imwrite(imagePath, img)
 
     def some_augmentations(self, num_operations):
         available_operations = [
