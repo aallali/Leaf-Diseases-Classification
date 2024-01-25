@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import os
 import random
 from libft import ft_form_image_path
+# dataset/apple/apple_healthy
+# augmented_directory/apple/apple_healthy
 
 
 class ImageAugmentor:
@@ -21,6 +23,9 @@ class ImageAugmentor:
         self.directory = os.path.dirname(self.image_path)
         self.export_directory = os.path.dirname(self.image_path) if \
             export_folder is None else export_folder
+        if not os.path.exists(self.export_directory):
+            # If it doesn't exist, create it
+            os.makedirs(self.export_directory)
         self.image_extension = self.get_image_extension(self.image_path)
         self.image = cv2.imread(self.image_path)
         self.augmented_images = []  # Initialize with the original image
@@ -181,25 +186,29 @@ class ImageAugmentor:
         orignalImage = (None, self.image)
         images_combined = [orignalImage] + augmentedImageTuple
 
+        # TODO: redo this logic
+        # if os.path.isdir("augmented_directory"):
+        #     shutil.rmtree("augmented_directory")
+
+        # os.makedirs(self.export_directory)
         for imgMetaData in images_combined:
             imgName = imgMetaData[0]
             img = imgMetaData[1]
 
+            # Create a new path by replacing the parent directory with the
+            # augmented directory folder
+            saving_path = os.path.join(self.export_directory,
+                                    os.path.basename(self.directory))
+            if not os.path.exists(saving_path):
+                # If it doesn't exist, create it
+                os.makedirs(saving_path)
+            saving_path = saving_path.replace('\\', '/')
             imagePath = ft_form_image_path(
-                destination=self.export_directory,
+                destination=saving_path,
                 name=self.image_name,
                 suffix=imgName,
                 extension=self.image_extension
             )
-
-            # TODO: redo this logic
-            if os.path.isdir("augmented_directory"):
-                shutil.rmtree("augmented_directory")
-
-            if not os.path.exists(self.export_directory):
-                # If it doesn't exist, create it
-                os.makedirs(self.export_directory)
-
             cv2.imwrite(imagePath, img)
 
     def some_augmentations(self, num_operations):
@@ -219,22 +228,19 @@ class ImageAugmentor:
         # Apply the selected number of operations
         for operation in available_operations[:max(num_operations, 0)]:
             # Generate random parameters if needed for each operation
-            match operation.__name__:
-                case "rotate":
-                    angle = random.uniform(-45, 45)
-                    operation(angle)
-                case 'blur':
-                    operation()
-                case  'scale':
-                    operation(2)
-                case  'brightness':
-                    operation(60)
-                case  'projection':
-                    operation(0.8)
-                case  'flip_vertical':
-                    operation()
-                case  'adjust_contrast':
-                    factor = random.uniform(0.5, 2.0)
-                    operation(factor)
-                case _:
-                    print(f"Undefined operation name [{operation.__name__}]")
+            if operation.__name__ == 'rotate':
+                angle = random.uniform(-45, 45)
+                operation(angle)
+            elif operation.__name__ == 'blur':
+                operation()
+            elif operation.__name__ == 'scale':
+                operation(2)
+            elif operation.__name__ == 'brightness':
+                operation(60)
+            elif operation.__name__ == 'projection':
+                operation(0.8)
+            elif operation.__name__ == 'flip_vertical':
+                operation()
+            elif operation.__name__ == 'adjust_contrast':
+                factor = random.uniform(0.5, 2.0)
+                operation(factor)
