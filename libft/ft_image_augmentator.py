@@ -1,4 +1,3 @@
-import shutil
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -152,9 +151,12 @@ class ImageAugmentor:
         src_points = np.float32([[0, 0], [cols - 1, 0], [0, rows - 1],
                                  [cols - 1, rows - 1]])
         dst_points = np.float32([
-            [int(0.1 * cols), int(0.3 * rows)],
-            [int(0.9 * cols), int(0.1 * rows)],
-            [int(0.3 * cols), int(0.9 * rows)],
+            # topleft
+            [int(0.1 * cols), int((0.3 + perspective_factor[0]) * rows)],
+            # top right
+            [int((0.9 - perspective_factor[0]) * cols), int(0.1 * rows)],
+            # bottom left
+            [int((0.3 + perspective_factor[0]) * cols), int(0.9 * rows)],
             [int(0.9 * cols), int(0.6 * rows)]
         ])
         perspective_matrix = cv2.getPerspectiveTransform(src_points,
@@ -186,10 +188,6 @@ class ImageAugmentor:
         orignalImage = (None, self.image)
         images_combined = [orignalImage] + augmentedImageTuple
 
-        # TODO: redo this logic
-        # if os.path.isdir("augmented_directory"):
-        #     shutil.rmtree("augmented_directory")
-
         # os.makedirs(self.export_directory)
         for imgMetaData in images_combined:
             imgName = imgMetaData[0]
@@ -198,7 +196,7 @@ class ImageAugmentor:
             # Create a new path by replacing the parent directory with the
             # augmented directory folder
             saving_path = os.path.join(self.export_directory,
-                                    os.path.basename(self.directory))
+                                       os.path.basename(self.directory))
             if not os.path.exists(saving_path):
                 # If it doesn't exist, create it
                 os.makedirs(saving_path)
@@ -220,10 +218,7 @@ class ImageAugmentor:
             self.brightness,
             self.projection,
             self.flip_vertical,
-            # Add other augmentation methods as needed
         ]
-        # Randomize the list of operations
-        random.shuffle(available_operations)
 
         # Apply the selected number of operations
         for operation in available_operations[:max(num_operations, 0)]:
@@ -238,9 +233,9 @@ class ImageAugmentor:
             elif operation.__name__ == 'brightness':
                 operation(60)
             elif operation.__name__ == 'projection':
-                operation(0.8)
+                operation((random.uniform(0.0, 0.4), random.uniform(0.4, 0.9)))
             elif operation.__name__ == 'flip_vertical':
                 operation()
             elif operation.__name__ == 'adjust_contrast':
-                factor = random.uniform(0.5, 2.0)
+                factor = 2.0
                 operation(factor)

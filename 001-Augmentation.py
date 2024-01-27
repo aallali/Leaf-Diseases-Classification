@@ -7,17 +7,17 @@ from libft import ImageAugmentor
 Distribution = importlib.import_module("000-Distribution")
 
 # number of possible augmentations
-AUGMENTATIONS_TOTAL = 7
+AUGMENTATIONS_TOTAL = 6
 
 
-def augment_and_save_single_image(image_path, size,  export_path):
+def augment_and_save_single_image(image_path, size,  export_path, plot):
     augmentor = ImageAugmentor(image_path, "./augmented_directory")
     # Apply some random augmentations
     augmentor.some_augmentations(size)
-    # print("augmented images", len(augmentor.augmented_images))
-    # print(size)
     # Save augmented images
     augmentor.save_images()
+    if plot:
+        augmentor.show_augmented_images()
 
 
 def augment_and_save_images_in_directory(directory_path, size, export_path):
@@ -42,7 +42,8 @@ def augment_and_save_images_in_directory(directory_path, size, export_path):
 def ft_augmentation(input_path, size, export_location):
     if os.path.isfile(input_path):
         # If the input is a file
-        augment_and_save_single_image(input_path, size,  export_location)
+        augment_and_save_single_image(input_path, size,  export_location,
+                                      True)
     elif os.path.isdir(input_path):
         # If the input is a directory
         data = Distribution.ft_distribution(input_path.replace('\\', '/'), 7)
@@ -54,9 +55,6 @@ def ft_augmentation(input_path, size, export_location):
             totalImgs = leaf[1]
             size = total_augmentations - totalImgs
             path_to_folder = data['image_paths'][folderName]['path_to_folder']
-            # export_path = f"{path_to_folder}"
-            # export_path = f"./test/{leaf}" if export_location else\
-            #     f"{path_to_folder}"
             imagePath = ''
             files_generated = 0
             for image in data['image_paths'][folderName]['images']:
@@ -67,7 +65,7 @@ def ft_augmentation(input_path, size, export_location):
                 files_generated += num_augmentations
                 if (num_augmentations):
                     augment_and_save_single_image(imagePath, num_augmentations,
-                                                  export_location)
+                                                  export_location, False)
         return True
     else:
         print(f"Error: {input_path} is not a valid file or directory.")
@@ -78,8 +76,6 @@ def main():
     parser = argparse.ArgumentParser(description="Image Augmentation Script")
     parser.add_argument("input_path", help="Path to the image or directory")
 
-    # TODO: adapt script to handle 6 augmentations by default, 
-    # but the ones we have in PDF
     parser.add_argument("-size", type=int, default=AUGMENTATIONS_TOTAL,
                         help="Number of augmentations to generate\
                         (default: 7 and max is number of images multiplied\

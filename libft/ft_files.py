@@ -20,7 +20,7 @@ def ft_list_imgs_and_folders(path):
                 result.append((item, "folder"))
 
     except FileNotFoundError:
-        print(f"The specified path '{ path }' does not exist.")
+        print(f"The specified path '{path}' does not exist.")
 
     return result
 
