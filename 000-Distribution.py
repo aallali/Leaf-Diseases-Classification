@@ -140,7 +140,7 @@ def main():
         "folder_path",
         help="Path to the folder containing images."
     )
- 
+
     parser.add_argument(
         "-s", "--split",
         type=float,
