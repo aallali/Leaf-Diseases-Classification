@@ -170,15 +170,27 @@ class ImageAugmentor:
                                       'image': perspective_transformed_image})
 
     def show_augmented_images(self):
-        num_images = len(self.augmented_images)
-        fig, axes = plt.subplots(1, num_images, figsize=(15, 5))
+        orignalImage = dict(name="Original", image=self.image)
+        images_combined = [orignalImage] + self.augmented_images
+
+        num_images = len(images_combined)
+        fig, axes = plt.subplots(1, num_images, figsize=(12, 3))
+        fig.suptitle(f"Augmentations for image: {self.image_name}")
 
         for i in range(num_images):
-            axes[i].imshow(cv2.cvtColor(self.augmented_images[i]['image'],
-                                        cv2.COLOR_BGR2RGB))
-            axes[i].axis('off')
-            axes[i].set_title(f"{self.augmented_images[i]['name']}")
+            img = images_combined[i]['image']
+            img_name = images_combined[i]['name']
 
+            axes[i].imshow(
+                cv2.cvtColor(
+                    img,
+                    cv2.COLOR_BGR2RGB
+                )
+            )
+            axes[i].set_axis_off()
+            axes[i].set_title(f"{img_name}")
+
+        fig.tight_layout()
         plt.show()
 
     def save_images(self):
@@ -207,6 +219,7 @@ class ImageAugmentor:
                 suffix=imgName,
                 extension=self.image_extension
             )
+
             cv2.imwrite(imagePath, img)
 
     def some_augmentations(self, num_operations):
