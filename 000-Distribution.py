@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import argparse
 from libft import (
     ft_scrap_images,
-    ft_print_pretty,
     ft_remove_prefix,
     ft_generate_random_hexa_color_codes,
-    find_end_level_dicts
+    find_end_level_dicts,
+    ft_split_dataset
 )
 
 COLORS = ft_generate_random_hexa_color_codes(100)
@@ -141,18 +141,44 @@ def main():
         help="Path to the folder containing images."
     )
 
-    args = parser.parse_args()
-
-    folder_path = args.folder_path
-
-    distribution = ft_distribution(
-        folder_path,
-        totalVariants=6,
-        plot_chart=True
+    parser.add_argument(
+        "-s", "--split",
+        type=float,
+        help="Specify the split ratio (validation data split) as a float \
+            (default: 0.1, valid values : 0-1).",
+        nargs='?', const=0.1,
     )
+    args = parser.parse_args()
+    [folder_path, split] = [args.folder_path, args.split]
 
-    del distribution["image_paths"]
-    ft_print_pretty(distribution)
+    if split:
+        if split > 0 and split < 1:
+            print("Goal:")
+            print(f"- augmented_datasets_train      : {1 - split}")
+            print(f"- augmented_datasets_validation : {split}")
+            print("Splitting...")
+
+            # Example usage:
+            ft_split_dataset(
+                folder_path,
+                "augmented_datasets_train",
+                "augmented_datasets_validation",
+                split
+            )
+        else:
+            print("Invalid split value, please specify a value between 0-1")
+            exit(1)
+    else:
+
+        distribution = ft_distribution(
+            folder_path,
+            totalVariants=6,
+            plot_chart=True
+        )
+
+        # del distribution["image_paths"]
+        for stat in distribution["folder_statistics"]:
+            print(stat)
 
 
 if __name__ == "__main__":
