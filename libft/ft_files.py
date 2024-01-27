@@ -63,6 +63,13 @@ def ft_form_image_path(destination, name, suffix=None, extension=".JPG"):
     return imagePath
 
 
+def ft_clone_folder(source_folder, destination_folder):
+    try:
+        shutil.copytree(source_folder, destination_folder)
+    except Exception as e:
+        print(f"Error cloning folder: {e}")
+
+
 def ft_split_dataset(
         input_folder,
         output_train_folder,
