@@ -48,9 +48,28 @@ $> python 000-Distribution.py ./dataset/
 ![image](https://i.imgur.com/6rXh3iI.png)
 
 ## 🗃️ Data Augmentation:
+A second program, named **`001-Augmentation.py`**, has been developed to balance the dataset. It employs data augmentation techniques, including rotation, projection, scaling, blur, etc., to generate six types of augmented images for each original image.
+usage:
+_op1: augment all images in a given folder to given destination_
+_op2: augment a single image to "./augmented_directory" and plot it_
+```txt
+option1: ./001-Augmentation.py ./path/to/folder/ -f="/path/to/export_location"
+option2: ./001-Augmentation.py ./path/to/image
+```
+##### - Augment single image
+```shell
+./001-Augmentation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
+```
 
-commin soon...
+![image](https://i.imgur.com/4Pddmb9.png)
 
+##### - Balance all dataset
+```shell
+./001-Augmentation.py dataset/ -l="augmented_directory" 
+&& ./000-Distribution.py ./augmented_directory
+```
+- _all classes are equivalent now_
+![image](https://i.imgur.com/H3Knhwv.png)
 ## 🎞️ Image Transformation:
 
 commin soon...

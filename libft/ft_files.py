@@ -20,7 +20,7 @@ def ft_list_imgs_and_folders(path):
                 result.append((item, "folder"))
 
     except FileNotFoundError:
-        print(f"The specified path '{ path }' does not exist.")
+        print(f"The specified path '{path}' does not exist.")
 
     return result
 
@@ -61,6 +61,13 @@ def ft_form_image_path(destination, name, suffix=None, extension=".JPG"):
 
     imagePath += f".{extension}"
     return imagePath
+
+
+def ft_clone_folder(source_folder, destination_folder):
+    try:
+        shutil.copytree(source_folder, destination_folder)
+    except Exception as e:
+        print(f"Error cloning folder: {e}")
 
 
 def ft_split_dataset(
