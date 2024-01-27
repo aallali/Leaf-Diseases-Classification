@@ -7,7 +7,6 @@ This project focuses on computer vision applications related to plant leaf disea
 ## 🛠️ Setup Project:
 
 To setup the project, you need to launch the following command:
-
 ```bash
 $> git clone https://github.com/aallali/Leaf-Diseases-Classification
 $> cd Leaf-Diseases-Classification
@@ -15,6 +14,7 @@ $> bash ft_setup_env.sh
 $> bash ft_setup_dataset.sh
 $> source venv/bin/activate
 ```
+_note: python version used during the making of this project : `3.10.12`_
 
 ## 📋 Table of contents
 
