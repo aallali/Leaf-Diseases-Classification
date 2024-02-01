@@ -16,3 +16,15 @@
     - [x] use `ft_distribution` to augment all images inside given path
     - [x] save augmented images in `augmented_directory` by default or from user by args
     - [x] plot augmented images if a single image is given as argument
+
+
+- [x] Transformation
+    - [x] make the transformation functions:
+        - [x] guassian_blur
+        - [x] mask
+        - [x] roi (range of interests) objects
+        - [x] analysis object
+        - [x] pseudo-landmarks
+        - [x] colors historgram
+    - [x] if given path is image transform it and show output in place
+    - [x] if given path is directory then transform contained images recursively with their class name to destination project

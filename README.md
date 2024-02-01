@@ -70,9 +70,33 @@ option2: ./001-Augmentation.py ./path/to/image
 ```
 - _all classes are equivalent now_
 ![image](https://i.imgur.com/H3Knhwv.png)
-## 🎞️ Image Transformation:
 
-commin soon...
+## 🎞️ Image Transformation:
+In this section, the **`002.Transformation.py`** program is crafted to harness the functionality of the **PlantCV library**. **Transformations**, which are processes that alter the appearance or characteristics of images, play a crucial role in the **leaf classification** domain. These transformations, such as **Gaussian blur**, **ROI (Region of Interest) object identification**, and **object analysis**, are applied directly to **plant leaf images**.
+
+**Transformations** are essential in **leaf classification** as they help enhance the quality of input images and highlight relevant features. For instance, **Gaussian blur** smoothens the image, reducing noise and enhancing structural details. **ROI object identification** focuses the analysis on specific regions of interest, ensuring that only pertinent information is considered. **Object analysis** provides valuable insights into the characteristics of identified objects within the images.
+
+By incorporating these **transformations**, the program aims to preprocess **leaf images** effectively, extracting key features that contribute to accurate and meaningful **leaf classification**. The **[PlantCV library](https://plantcv.danforthcenter.org/)** serves as a powerful tool in this process, offering a range of functions for image analysis and transformation.
+
+#### ==> transform single given image and visualize the output
+
+```shell
+./002-Transformation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
+```
+![image](https://i.imgur.com/93cM7F1.png)
+![image](https://i.imgur.com/avuJHe7.png)
+
+#### ==> transform all images in given source folder to given destination folder
+```shell
+✗ ./002-Transformation.py augmented_datasets_train -dst="augmented_datasets_train_transformed"
+Source directory :  augmented_datasets_train
+Destination directory :  augmented_datasets_train_transformed
+Bulk transformer is running now, please be patient...
+100%|███████████████████████████████████████████████████████████| 11880/11880 [06:30<00:00, 30.42it/s]
+(venv) ➜  Leaf-Diseases-Classification-CNN git:(main) ✗ 
+```
+![image](https://i.imgur.com/s1tZHhR.png)
+
 
 ## 🤖 Classification:
 
