@@ -2,8 +2,8 @@ matplotlib==3.5.3
 numpy==1.26.3
 opencv-python==4.9.0.80
 flake8==7.0.0
-plantcv==4.2.1
+plantcv==3.14.3
 tqdm==4.66.1
 mizani==0.9.2 # important to install this version to avoid an 
-                # incompatiblity error
+              # incompatiblity error
 
