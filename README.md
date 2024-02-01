@@ -58,14 +58,14 @@ option2: ./001-Augmentation.py ./path/to/image
 ```
 ##### - Augment single image
 ```shell
-./001-Augmentation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
+$> ./001-Augmentation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
 ```
 
 ![image](https://i.imgur.com/4Pddmb9.png)
 
 ##### - Balance all dataset
 ```shell
-./001-Augmentation.py dataset/ -l="augmented_directory" 
+$> ./001-Augmentation.py dataset/ -l="augmented_directory" 
 && ./000-Distribution.py ./augmented_directory
 ```
 - _all classes are equivalent now_
@@ -81,19 +81,18 @@ By incorporating these **transformations**, the program aims to preprocess **lea
 #### ==> transform single given image and visualize the output
 
 ```shell
-./002-Transformation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
+$> ./002-Transformation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
 ```
 ![image](https://i.imgur.com/93cM7F1.png)
 ![image](https://i.imgur.com/avuJHe7.png)
 
 #### ==> transform all images in given source folder to given destination folder
 ```shell
-✗ ./002-Transformation.py augmented_datasets_train -dst="augmented_datasets_train_transformed"
+$> ./002-Transformation.py augmented_datasets_train -dst="augmented_datasets_train_transformed"
 Source directory :  augmented_datasets_train
 Destination directory :  augmented_datasets_train_transformed
 Bulk transformer is running now, please be patient...
 100%|███████████████████████████████████████████████████████████| 11880/11880 [06:30<00:00, 30.42it/s]
-(venv) ➜  Leaf-Diseases-Classification-CNN git:(main) ✗ 
 ```
 ![image](https://i.imgur.com/s1tZHhR.png)
 
