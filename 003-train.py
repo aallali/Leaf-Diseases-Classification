@@ -2,7 +2,7 @@
 import tensorflow as tf
 import os
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout, BatchNormalization
 import cv2
 import imghdr
 from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
@@ -40,35 +40,52 @@ class Trainer:
 
         print("Classes saved:", self.classes)
         
-    def build_neural_network_layers(self):
-  
-        self.model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)))
-        self.model.add(MaxPooling2D((2, 2)))
-        
-        self.model.add(Conv2D(64, (3, 3), activation='relu'))
-        self.model.add(MaxPooling2D((2, 2)))
-        
-        self.model.add(Conv2D(128, (3, 3), activation='relu'))
-        self.model.add(MaxPooling2D((2, 2)))
-        
-        # Flatten layer
-        self.model.add(Flatten())
-        
-        # Dense layers
-        self.model.add(Dense(128, activation='relu'))
-        self.model.add(Dense(64, activation='relu'))
-        self.model.add(Dense(8, activation='softmax'))  # Output layer with 8 classes, softmax activation
-        
-        # Compile the model
+    def build_neural_network_layers(self, model_choice):
+        if model_choice == 1:
+            self.model.add(Conv2D(16, 3, padding='same', activation='relu')),
+            self.model.add(MaxPooling2D()),
+            self.model.add(Conv2D(32, 3, padding='same', activation='relu')),
+            self.model.add(MaxPooling2D()),
+            self.model.add(Conv2D(64, 3, padding='same', activation='relu')),
+            self.model.add(MaxPooling2D()),
+            self.model.add(Flatten()),
+            self.model.add(Dense(128, activation='relu')),
+            self.model.add(Dense(8, activation='softmax')),
+        if model_choice == 2:
+            # Add Convolutional layers
+            self.model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)))
+            self.model.add(MaxPooling2D(pool_size=(2, 2)))
+
+            self.model.add(Conv2D(64, (3, 3), activation='relu'))
+            self.model.add(MaxPooling2D(pool_size=(2, 2)))
+
+            self.model.add(Conv2D(128, (3, 3), activation='relu'))
+            self.model.add(MaxPooling2D(pool_size=(2, 2)))
+
+            # Flatten the output of the convolutional layers
+            self.model.add(Flatten())
+
+            # Add fully connected layers
+            self.model.add(Dense(512, activation='relu'))
+            self.model.add(Dropout(0.5))  # Dropout layer to prevent overfitting
+            self.model.add(Dense(256, activation='relu'))
+            self.model.add(Dropout(0.5))  # Dropout layer to prevent overfitting
+            self.model.add(Dense(8, activation='softmax'))  # Output layer with 8 classes and softmax activation
+
+            # Compile the model with adjusted learning rate
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
         self.model.compile(optimizer='adam',
                     loss='categorical_crossentropy',  # Categorical cross-entropy loss for multi-class classification
                     metrics=['accuracy'])
 
+        # self.model.compile(optimizer='adam',
+        #       loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+        #       metrics=['accuracy'])
 
     def start(self, epoch):
         self.history = self.model.fit(self.train, epochs=epoch, validation_data=self.val)
     def save(self, path):
-        self.model.save(os.path.join('models','imageclassifier.h5'))
+        self.model.save(os.path.join('models','imageclassifier4.h5'))
         
     def plot_history(self):
         # plot loss
@@ -102,23 +119,14 @@ class Trainer:
 def main():
     training_data = tf.keras.utils.image_dataset_from_directory('augmented_datasets_train_transformed')
     testing_data = tf.keras.utils.image_dataset_from_directory('augmented_datasets_validation')
-    data_set = training_data.as_numpy_iterator()
-    data_set_testing = testing_data.as_numpy_iterator()
     testing_data.as_numpy_iterator()
-    d = training_data.as_numpy_iterator()
-    batch = d.next()
-    fig, ax = plt.subplots(ncols=4, figsize=(20,20))
-
-    # for idx, img in enumerate(batch[0][:4]):
-    #     ax[idx].imshow(img.astype(int))
-    #     ax[idx].title.set_text(batch[1][idx])
 
     training_data = training_data.map(lambda x, y: (x / 255, tf.one_hot(y, depth=8)))  # One-hot encoding labels
     testing_data = testing_data.map(lambda x, y: (x / 255, tf.one_hot(y, depth=8)))      # One-hot encoding labels
     trainer = Trainer(training_data, testing_data)
     trainer.save_classes('augmented_datasets_train_transformed')
     trainer.group_data(7, 2)
-    trainer.build_neural_network_layers()
+    trainer.build_neural_network_layers(2)
     trainer.start(5)
     trainer.plot_history()
     trainer.save("path")

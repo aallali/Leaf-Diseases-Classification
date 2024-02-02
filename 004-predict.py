@@ -6,13 +6,13 @@ import cv2
 
 
 def main():
-    new_model = load_model('models/imageclassifier.h5')
+    new_model = load_model('models/imageclassifier3.h5')
 
     # Directory containing the dataset
     dataset_directory = 'augmented_datasets_train_transformed'
 
     # testign image
-    img = cv2.imread('augmented_datasets_validation/Apple_rust/image (2)_Brightness.JPG')
+    img = cv2.imread('augmented_datasets_validation/Grape_Esca/image (33).JPG')
 
     # Get a list of subdirectories (each subdirectory represents a class)
     class_directories = [d for d in os.listdir(dataset_directory) if os.path.isdir(os.path.join(dataset_directory, d))]
