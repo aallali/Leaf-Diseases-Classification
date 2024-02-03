@@ -103,7 +103,7 @@
             - Neurons: 8
             - Activation: Softmax
 
-    ![Alt text](./images/sum.png)
+    ![Alt text](https://www.researchgate.net/publication/339892439/figure/fig5/AS:871189681537032@1584719214501/A-schematic-illustration-of-the-convolutional-neural-network-CNN-architecture-The.png)
 3. **Training:**
    - **Initiating Training:**
      - Using `fit` method to train the model on the training dataset.
