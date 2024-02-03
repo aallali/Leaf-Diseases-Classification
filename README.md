@@ -98,9 +98,19 @@ Bulk transformer is running now, please be patient...
 
 
 ## 🤖 Classification:
+In the last phase, the development process includes the creation of two distinct programs: **`003-train.py`** and **`004-predict.py`**.
 
-commin soon...
+### 1- Train:
+Within the **`003-train.py`** program, augmented images are employed to discern the distinctive features of designated leaf diseases. This involves leveraging a Convolutional Neural Network (CNN) implemented using the Keras framework. The acquired learning outcomes are then stored and provided in the form of a compressed .zip archive.
 
+`comming soon...`
+### 2- Prediction:
+On the other hand, the **`004-predict.py`** program is designed to take a leaf image as its input. It not only displays the original image but also showcases its various transformations. Furthermore, the program makes predictions regarding the specific type of disease present in the given leaf.
+
+```shell
+./004-predict.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
+```
+![predict](https://i.imgur.com/Mt1DhIn.png)
 
 ---
 ## 🔬 Unit Tests:
