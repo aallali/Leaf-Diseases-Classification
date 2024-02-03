@@ -12,7 +12,7 @@ from tensorflow.keras.models import load_model
 import argparse
 
 class Trainer:
-    def __init__(self, data_set_train, data_set_test, model):
+    def __init__(self, data_set_train, data_set_test, model, save_path):
         """
         Initialize the Trainer object.
 
@@ -22,6 +22,7 @@ class Trainer:
         - model: Path to a pre-trained model, if available.
         """
         self.data_set = data_set_train
+        self.save_path = save_path
         self.train = 0
         self.val = 0
         self.test = data_set_test
@@ -56,6 +57,9 @@ class Trainer:
         dataset_directory = path
         class_directories = [d for d in os.listdir(dataset_directory) if os.path.isdir(os.path.join(dataset_directory, d))]
         self.classes = class_directories
+        with open(self.save_path + '/labels', 'w') as file:
+            for class_name in class_directories:
+                file.write(class_name + '\n')
         print("Classes saved:", self.classes)
         
     def build_neural_network_layers(self, model_choice):
@@ -171,7 +175,7 @@ def main(args):
     testing_data = tf.keras.utils.image_dataset_from_directory(args.validation_set)
     training_data = training_data.map(lambda x, y: (x / 255, tf.one_hot(y, depth=8)))
     testing_data = testing_data.map(lambda x, y: (x / 255, tf.one_hot(y, depth=8)))
-    trainer = Trainer(training_data, testing_data, args.model)
+    trainer = Trainer(training_data, testing_data, args.model, args.model_save_location)
     trainer.save_classes(args.training_set)
     trainer.group_data(7, 2)
     if (not args.model):
