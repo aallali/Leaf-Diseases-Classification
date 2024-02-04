@@ -163,3 +163,5 @@ test/
 *.JPG
 *.png
 .virtual_documents/
+
+models
