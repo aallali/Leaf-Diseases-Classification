@@ -10,6 +10,32 @@ import numpy as np
 from matplotlib import pyplot as plt
 from tensorflow.keras.models import load_model
 import argparse
+import yaml
+
+class Config:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+
+def load_config(config_file):
+    with open(config_file, 'r') as file:
+        config_dict = yaml.safe_load(file)
+    return Config(**config_dict)
+
+def generate_config(config_file):
+    """
+    Generate a configuration file with default values.
+    """
+    default_config = {
+        'model': "",
+        'epochs': 1,
+        'model_save_location': "models",
+        'training_set': "augmented_datasets_train_transformed",
+        'validation_set': "augmented_datasets_validation",
+        'testing_set': "augmented_datasets_test"
+    }
+    with open(config_file, 'w') as file:
+        yaml.dump(default_config, file)
+
 
 class Trainer:
     def __init__(self, data_set_train, data_set_test, model, save_path):
@@ -161,14 +187,14 @@ class Trainer:
             pre.update_state(y, yhat)
             re.update_state(y, yhat)
             acc.update_state(y, yhat)
-        print(pre.result(), re.result(), acc.result())
+        print(f'Precision: {pre.result().numpy()}, Recall: {re.result().numpy()}, Accuracy: {acc.result().numpy()}')
 
 def main(args):
     """
     Main function to train the convolutional neural network.
 
     Args:
-    - args: Command-line arguments.
+    - config: Dictionary containing configuration parameters.
     """
     print(args)
     training_data = tf.keras.utils.image_dataset_from_directory(args.training_set)
@@ -180,23 +206,20 @@ def main(args):
     trainer.group_data(7, 2)
     if (not args.model):
         trainer.build_neural_network_layers(3)
-    trainer.start(args.epochs)
-    trainer.plot_history()
-    trainer.save(args.model_save_location)
-
-
-
+    if (args.epochs):
+        trainer.start(args.epochs)
+        trainer.plot_history()
+        trainer.save(args.model_save_location)
+    trainer.testing()
 if __name__ == "__main__":
     # Set up command-line argument parser
     parser = argparse.ArgumentParser(description="Train a convolutional neural network")
-    parser.add_argument("--model", type=str, default="", help="Path to a model file")
-    parser.add_argument("--epochs", type=int, default=1, help="Number of epochs")
-    parser.add_argument("-m", "--model-save-location", default="models", help="Directory to save the trained model")
-    parser.add_argument("-t", "--training-set", default="augmented_datasets_train_transformed", help="Directory containing the training dataset")
-    parser.add_argument("-v", "--validation-set", default="augmented_datasets_validation", help="Directory containing the validation dataset")
-    parser.add_argument("-s", "--testing-set", default="augmented_datasets_test", help="Directory containing the testing dataset")
+    parser.add_argument("--generate-config", action="store_true", help="Generate a default configuration file")
     args = parser.parse_args()
 
-
-    args = parser.parse_args()
-    main(args)
+    if args.generate_config:
+        generate_config('config.yaml')
+        print("Default configuration file generated successfully.")
+    else:
+        config = load_config('config.yaml')
+        main(config)
