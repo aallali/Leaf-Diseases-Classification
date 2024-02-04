@@ -45,6 +45,20 @@ class Transforner:
         # gaussian_blur
         self.gauss = None
 
+        # mask
+        self.masked2 = None
+        self.masked2_raw = None
+        # ROI
+        self.roi = None
+        self.hierarchy3 = None
+        self.kept_mask = None
+
+        # analysis_image
+        self.analysis_image = None
+
+        # pseudolandmarks
+        self.pseudolandmarks_image = None
+
     def getPath(self, suffix):
         dst = self.options.destination
         cName = self.options.class_name
@@ -53,19 +67,25 @@ class Transforner:
 
         return f"{dst}/{cName}/{imgName}_{suffix}.JPG"
 
-    def load_original(self):
-        img, _, _ = pcv.readimage(self.options.full_path)
-        self.img = img
+    def load_original(self, img_raw=None):
+        if img_raw is not None:
+            self.img = img_raw
+        else:
+            img, _, _ = pcv.readimage(self.options.full_path)
+            self.img = img
         # Convert RGB to grayscale
-        self.GRAY = pcv.rgb2gray(rgb_img=img)
+        self.GRAY = pcv.rgb2gray(rgb_img=self.img)
 
         pcv.print_image(
-            img,
+            self.img,
             filename=self.getPath("original"),
         )
         return self.img
 
     def guassian_blur(self):
+        if self.img is None:
+            self.load_original()
+
         s = pcv.rgb2gray_hsv(rgb_img=self.img, channel="s")
 
         s_thresh = pcv.threshold.binary(
@@ -81,6 +101,8 @@ class Transforner:
         return self.gauss
 
     def mask(self):
+        if self.gauss is None:
+            self.guassian_blur()
         # Convert the 'b' channel of the LAB color space from the RGB image
         # to grayscale
         b = pcv.rgb2gray_lab(rgb_img=self.img, channel="b")
@@ -142,9 +164,12 @@ class Transforner:
 
         self.masked2 = _masked2
         self.ab = _AB
-        return _masked2, _AB
+        return Image.open(self.getPath("mask"))
 
     def roi_objects(self):
+        if self.ab is None:
+            self.mask()
+
         pcv.params.debug_outdir = self.options.destination
         pcv.params.debug = "print"
 
@@ -191,6 +216,9 @@ class Transforner:
         return roi, hierarchy3, kept_mask
 
     def analysis_obj(self):
+        if self.roi is None or self.hierarchy3 is None:
+            self.roi_objects()
+
         pcv.params.debug = None
 
         obj, mask = pcv.object_composition(
@@ -208,9 +236,13 @@ class Transforner:
 
         self.mask1 = mask
         self.obj = obj
-        return mask, obj
+        self.analysis_image = analysis_image
+        return analysis_image
 
     def pseudolandmarks(self):
+        if self.mask1 is None or self.obj is None:
+            self.pseudolandmarks()
+
         pcv.params.debug = "print"
 
         top_x, bottom_x, center_v_x = pcv.x_axis_pseudolandmarks(
@@ -218,6 +250,7 @@ class Transforner:
         )
 
         pcv.params.debug = None
+
         file_rename = (
             self.options.destination
             + "/"
@@ -229,7 +262,10 @@ class Transforner:
         for f in glob.glob("./tmp/*.png"):
             os.remove(f)
 
-        return
+        self.pseudolandmarks_image = Image.open(
+            self.getPath("pseudolandmarks")
+        )
+        return self.pseudolandmarks_image
 
     def colors_histogram(self):
         pcv.params.debug = None
@@ -255,14 +291,14 @@ class Transforner:
         return color_histogram
 
     def run_all(self):
-        self.load_original()
+        # self.load_original()
         self.guassian_blur()
         self.mask()
         self.roi_objects()
         self.analysis_obj()
         self.pseudolandmarks()
 
-    def plot_all(self):
+    def load_all_transformations(self):
         images = {
             'Fig1. Original': Image.open(self.getPath("original")),
             'Fig2. Gaussian_Blur': Image.open(self.getPath("gaussian_blur")),
@@ -273,11 +309,15 @@ class Transforner:
             ),
             'Fig6. Analysis Obj.': Image.open(self.getPath("analysis_obj")),
         }
+        return images
+
+    def plot_all(self):
+        images = self.load_all_transformations()
 
         # Variable for the number of images per row
         images_per_row = 3
 
-        # Calculate the number of rows needed based on the number of 
+        # Calculate the number of rows needed based on the number of
         # images and images per row
         num_rows = len(images) // images_per_row + len(images) % images_per_row
 

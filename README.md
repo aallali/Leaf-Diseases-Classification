@@ -98,10 +98,36 @@ Bulk transformer is running now, please be patient...
 
 
 ## 🤖 Classification:
+In the last phase, the development process includes the creation of two distinct programs: **`003-train.py`** and **`004-predict.py`**.
 
-commin soon...
+### 1- Train:
+Within the **`003-train.py`** program, augmented images are employed to discern the distinctive features of designated leaf diseases. This involves leveraging a Convolutional Neural Network (CNN) implemented using the Keras framework. The acquired learning outcomes are then stored and provided in the form of a compressed .zip archive.
 
+`comming soon...`
+### 2- Prediction:
+On the other hand, the **`004-predict.py`** program is designed to take a leaf image as its input. It not only displays the original image but also showcases its various transformations. Furthermore, the program makes predictions regarding the specific type of disease present in the given leaf.
 
+```shell
+./004-predict.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
+```
+![predict](https://i.imgur.com/Mt1DhIn.png)
+
+```shell
+$ ./004-predict.py -h
+usage: 004-predict.py [-h] [-lb LABELS] [-m MODEL] image_path
+
+Predict class of a leaf image or directory
+
+positional arguments:
+  image_path            Path to the image
+
+options:
+  -h, --help            show this help message and exit
+  -lb LABELS, --labels LABELS
+                        /path/to/labels.txt (default: models/labels.txt)
+  -m MODEL, --model MODEL
+                        /path/to/model.h5 (default: models/model.h5)
+```
 ---
 ## 🔬 Unit Tests:
 we tried to run as much unit tests as possible for program especially the helpers functions (`libft`)
