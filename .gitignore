@@ -164,3 +164,6 @@ models/
 
 *.JPG
 *.png
+.virtual_documents/
+
+models

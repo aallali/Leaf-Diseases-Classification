@@ -2,6 +2,7 @@ import os
 import numpy as np
 import shutil
 import random
+import yaml
 
 
 def ft_list_imgs_and_folders(path):
@@ -145,3 +146,30 @@ def ft_split_dataset(
             src_path = os.path.join(root, file)
             dest_path = os.path.join(output_test_root, file)
             shutil.copy2(src_path, dest_path)
+
+
+class Config:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+
+
+def load_config(config_file):
+    with open(config_file, 'r') as file:
+        config_dict = yaml.safe_load(file)
+    return Config(**config_dict)
+
+
+def generate_config(config_file):
+    """
+    Generate a configuration file with default values.
+    """
+    default_config = {
+        'model': "",
+        'epochs': 1,
+        'model_save_location': "models",
+        'training_set': "augmented_datasets_train_transformed",
+        'validation_set': "augmented_datasets_validation",
+        'testing_set': "augmented_datasets_test"
+    }
+    with open(config_file, 'w') as file:
+        yaml.dump(default_config, file)
