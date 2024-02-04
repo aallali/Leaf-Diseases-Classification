@@ -155,16 +155,19 @@ def main():
 
     if split:
         if split > 0 and split < 1:
+            train_dir_name = os.path.normpath(folder_path) + "_train_split"
+            test_dir_name = os.path.normpath(folder_path) + "_test_split"
+
             print("Goal:")
-            print(f"- augmented_datasets_train      : {1 - split}")
-            print(f"- augmented_datasets_validation : {split}")
+            print(f"- {train_dir_name}      : {1 - split}")
+            print(f"- {test_dir_name} : {split}")
             print("Splitting...")
 
             # Example usage:
             ft_split_dataset(
                 folder_path,
-                "augmented_datasets_train",
-                "augmented_datasets_validation",
+                train_dir_name,
+                test_dir_name,
                 split
             )
         else:
