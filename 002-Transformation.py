@@ -2,6 +2,7 @@
 
 import argparse
 from libft import Options, Transforner, bulk_transformer
+import os
 
 
 def main():
@@ -19,15 +20,11 @@ def main():
         default="./tmp",
         help="the destination folder to save the transformed images",
     )
-    # parser.add_argument(
-    #     "-t", "--training",
-    #     type=bool,
-    #     default=False,
-    #     help="in case you running the transformaton for training dataset\
-    #         (default: False)",
-    # )
 
     args = parser.parse_args()
+
+    if args.destination == "./tmp":
+        args.destination = os.path.normpath(args.src_path) + "_transformed"
 
     options = Options(src_path=args.src_path, dest_path=args.destination)
 
