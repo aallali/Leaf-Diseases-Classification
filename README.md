@@ -112,6 +112,22 @@ On the other hand, the **`004-predict.py`** program is designed to take a leaf i
 ```
 ![predict](https://i.imgur.com/Mt1DhIn.png)
 
+```shell
+$ ./004-predict.py -h
+usage: 004-predict.py [-h] [-lb LABELS] [-m MODEL] image_path
+
+Predict class of a leaf image or directory
+
+positional arguments:
+  image_path            Path to the image
+
+options:
+  -h, --help            show this help message and exit
+  -lb LABELS, --labels LABELS
+                        /path/to/labels.txt (default: models/labels.txt)
+  -m MODEL, --model MODEL
+                        /path/to/model.h5 (default: models/model.h5)
+```
 ---
 ## 🔬 Unit Tests:
 we tried to run as much unit tests as possible for program especially the helpers functions (`libft`)
