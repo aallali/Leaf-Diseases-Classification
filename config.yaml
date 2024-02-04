@@ -1,4 +1,0 @@
-epochs: 1
-model: ''
-model_save_location: models
-training_set: tmp
