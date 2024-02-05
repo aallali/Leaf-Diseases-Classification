@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-
 import os
 import argparse
 from matplotlib import pyplot as plt
 from libft import generate_config, load_config
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf  # noqa: E402
-from tensorflow.keras.models import Sequential  # noqa: E402
-from tensorflow.keras.layers import (  # noqa: E402
-    Conv2D,
-    MaxPooling2D,
-    Dense,
-    Flatten,
-    Dropout
-)
-from tensorflow.keras.metrics import (  # noqa: E402
-    Precision,
-    Recall,
-    BinaryAccuracy
-)
+
+# extract Objects from TensorFlow
+Adam = tf.keras.optimizers.Adam
+Sequential = tf.keras.models.Sequential
+Conv2D = tf.keras.layers.Conv2D
+
+MaxPooling2D = tf.keras.layers.MaxPool2D
+Dense = tf.keras.layers.Dense
+Flatten = tf.keras.layers.Flatten
+Dropout = tf.keras.layers.Dropout
+
+Precision = tf.keras.metrics.Precision
+Recall = tf.keras.metrics.Recall
+BinaryAccuracy = tf.keras.metrics.BinaryAccuracy
 
 
 class Trainer:
@@ -122,6 +122,7 @@ class Trainer:
             self.model.add(Dense(64, activation='relu'))
             self.model.add(Dense(8, activation='softmax'))
         if model_choice == 4:
+            # TODO: fix undefined variable Rescaling
             self.model.add(Rescaling(1.0 / 255))
             self.model.add(Conv2D(64, (3, 3), activation="relu"))
             self.model.add(MaxPooling2D(2, 2))
@@ -133,12 +134,22 @@ class Trainer:
             self.model.add(Dense(512, activation="relu"))
             self.model.add(Dense(256, activation="relu"))
             self.model.add(Dense(8, activation="softmax"))
-            
 
+        learning_rate = 0.001
 
-        self.model.compile(optimizer='adam',
-                           loss='categorical_crossentropy',
-                           metrics=['accuracy'])
+        optimizer = Adam(learning_rate=learning_rate)
+
+        self.model.compile(
+            optimizer=optimizer,
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+
+        self.model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
 
     def start(self, epoch):
         """
@@ -171,7 +182,11 @@ class Trainer:
         plt.show()
 
         fig = plt.figure()
-        plt.plot(self.history.history['accuracy'], color='teal', label='accuracy')
+        plt.plot(
+            self.history.history['accuracy'],
+            color='teal',
+            label='accuracy'
+        )
         fig.suptitle('Accuracy', fontsize=20)
         plt.legend(loc="upper left")
         plt.show()
@@ -191,7 +206,6 @@ class Trainer:
             acc.update_state(y, yhat)
         print(f'Precision: {pre.result().numpy()},\
               Recall: {re.result().numpy()}, Accuracy: {acc.result().numpy()}')
-
 
 
 def main(args):
