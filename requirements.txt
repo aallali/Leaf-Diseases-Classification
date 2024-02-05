@@ -1,5 +1,5 @@
 matplotlib==3.5.3
-numpy==1.26.3
+# numpy==1.26.3
 opencv-python==4.9.0.80
 flake8==7.0.0
 plantcv==3.14.3

@@ -168,8 +168,6 @@ def generate_config(config_file):
         'epochs': 1,
         'model_save_location': "models",
         'training_set': "augmented_datasets_train_transformed",
-        'validation_set': "augmented_datasets_validation",
-        'testing_set': "augmented_datasets_test"
     }
     with open(config_file, 'w') as file:
         yaml.dump(default_config, file)

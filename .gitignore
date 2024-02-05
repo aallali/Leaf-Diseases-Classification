@@ -167,3 +167,7 @@ models/
 .virtual_documents/
 
 models
+myenv
+augmented_*
+003-train.ipynb
+config.yaml
