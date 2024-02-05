@@ -133,12 +133,22 @@ class Trainer:
             self.model.add(Dense(512, activation="relu"))
             self.model.add(Dense(256, activation="relu"))
             self.model.add(Dense(8, activation="softmax"))
-            
 
+        learning_rate = 0.001
 
-        self.model.compile(optimizer='adam',
-                           loss='categorical_crossentropy',
-                           metrics=['accuracy'])
+        optimizer = Adam(learning_rate=learning_rate)
+
+        self.model.compile(
+            optimizer=optimizer,
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+
+        self.model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
 
     def start(self, epoch):
         """
@@ -191,7 +201,6 @@ class Trainer:
             acc.update_state(y, yhat)
         print(f'Precision: {pre.result().numpy()},\
               Recall: {re.result().numpy()}, Accuracy: {acc.result().numpy()}')
-
 
 
 def main(args):
