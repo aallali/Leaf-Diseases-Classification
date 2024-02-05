@@ -31,7 +31,7 @@ def plot_prediction(image, image_masked, class_name_prediction, img_path):
 
 def predict(img):
     image = np.array(img)
-    image_resize = cv2.resize(image, (256, 256), interpolation=cv2.INTER_AREA)
+    image_resize = cv2.resize(image, (128, 128), interpolation=cv2.INTER_AREA)
     yhat = MODEL.predict(np.expand_dims(image_resize, axis=0), verbose=0)
     predicted_index = np.argmax(yhat)
     predicted_class = CLASSES[predicted_index]
