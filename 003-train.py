@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 
 import os
-import tensorflow as tf
 import argparse
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, \
-    Dropout
-from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
 from matplotlib import pyplot as plt
 from libft import generate_config, load_config
-
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import tensorflow as tf  # noqa: E402
+from tensorflow.keras.models import Sequential  # noqa: E402
+from tensorflow.keras.layers import (  # noqa: E402
+    Conv2D,
+    MaxPooling2D,
+    Dense,
+    Flatten,
+    Dropout
+)
+from tensorflow.keras.metrics import (  # noqa: E402
+    Precision,
+    Recall,
+    BinaryAccuracy
+)
 
 
 class Trainer:
