@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 
 import os
-import tensorflow as tf
 import argparse
-
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, \
-    Dropout
-from tensorflow.keras.metrics import Precision, Recall, BinaryAccuracy
 from matplotlib import pyplot as plt
 from libft import generate_config, load_config
-
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+import tensorflow as tf  # noqa: E402
+from tensorflow.keras.models import Sequential  # noqa: E402
+from tensorflow.keras.layers import (  # noqa: E402
+    Conv2D,
+    MaxPooling2D,
+    Dense,
+    Flatten,
+    Dropout
+)
+from tensorflow.keras.metrics import (  # noqa: E402
+    Precision,
+    Recall,
+    BinaryAccuracy
+)
 
 
 class Trainer:
@@ -63,6 +70,8 @@ class Trainer:
         class_directories = sorted(class_directories)
         self.classes = class_directories
         print("Classes saved:", class_directories)
+        if not os.path.exists(self.save_path):
+            os.makedirs(self.save_path)
         with open(self.save_path + '/labels.txt', 'w') as file:
             for class_name in class_directories:
                 file.write(class_name + '\n')
@@ -102,7 +111,7 @@ class Trainer:
 
         if model_choice == 3:
             self.model.add(Conv2D(32, (3, 3), activation='relu',
-                                  input_shape=(256, 256, 3)))
+                                  input_shape=(128, 128, 3)))
             self.model.add(MaxPooling2D((2, 2)))
             self.model.add(Conv2D(64, (3, 3), activation='relu'))
             self.model.add(MaxPooling2D((2, 2)))
@@ -112,6 +121,20 @@ class Trainer:
             self.model.add(Dense(128, activation='relu'))
             self.model.add(Dense(64, activation='relu'))
             self.model.add(Dense(8, activation='softmax'))
+        if model_choice == 4:
+            self.model.add(Rescaling(1.0 / 255))
+            self.model.add(Conv2D(64, (3, 3), activation="relu"))
+            self.model.add(MaxPooling2D(2, 2))
+            self.model.add(Conv2D(64, (3, 3), activation="relu"))
+            self.model.add(MaxPooling2D(2, 2))
+            self.model.add(Conv2D(32, (1, 1), activation="relu"))
+            self.model.add(MaxPooling2D(2, 2))
+            self.model.add(Flatten())
+            self.model.add(Dense(512, activation="relu"))
+            self.model.add(Dense(256, activation="relu"))
+            self.model.add(Dense(8, activation="softmax"))
+            
+
 
         self.model.compile(optimizer='adam',
                            loss='categorical_crossentropy',
@@ -143,17 +166,12 @@ class Trainer:
         """
         fig = plt.figure()
         plt.plot(self.history.history['loss'], color='teal', label='loss')
-        plt.plot(self.history.history['val_loss'], color='orange',
-                 label='val_loss')
         fig.suptitle('Loss', fontsize=20)
         plt.legend(loc="upper left")
         plt.show()
 
         fig = plt.figure()
-        plt.plot(self.history.history['accuracy'], color='teal',
-                 label='accuracy')
-        plt.plot(self.history.history['val_accuracy'], color='orange',
-                 label='val_accuracy')
+        plt.plot(self.history.history['accuracy'], color='teal', label='accuracy')
         fig.suptitle('Accuracy', fontsize=20)
         plt.legend(loc="upper left")
         plt.show()
@@ -175,6 +193,7 @@ class Trainer:
               Recall: {re.result().numpy()}, Accuracy: {acc.result().numpy()}')
 
 
+
 def main(args):
     """
     Main function to train the convolutional neural network.
@@ -184,7 +203,7 @@ def main(args):
     """
 
     training_data = tf.keras.utils.image_dataset_from_directory(
-        args.training_set)
+        args.training_set, image_size=(128, 128))
     training_data = training_data.map(lambda x, y: (x / 255, tf.one_hot(
         y, depth=8)))
     trainer = Trainer(training_data, args.model, args.model_save_location)
