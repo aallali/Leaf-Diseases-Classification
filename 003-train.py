@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-
 import os
 import argparse
 from matplotlib import pyplot as plt
 from libft import generate_config, load_config
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf  # noqa: E402
-from tensorflow.keras.models import Sequential  # noqa: E402
-from tensorflow.keras.layers import (  # noqa: E402
-    Conv2D,
-    MaxPooling2D,
-    Dense,
-    Flatten,
-    Dropout
-)
-from tensorflow.keras.metrics import (  # noqa: E402
-    Precision,
-    Recall,
-    BinaryAccuracy
-)
+
+# extract Objects from TensorFlow
+Adam = tf.keras.optimizers.Adam
+Sequential = tf.keras.models.Sequential
+Conv2D = tf.keras.layers.Conv2D
+
+MaxPooling2D = tf.keras.layers.MaxPool2D
+Dense = tf.keras.layers.Dense
+Flatten = tf.keras.layers.Flatten
+Dropout = tf.keras.layers.Dropout
+
+Precision = tf.keras.metrics.Precision
+Recall = tf.keras.metrics.Recall
+BinaryAccuracy = tf.keras.metrics.BinaryAccuracy
 
 
 class Trainer:
@@ -182,7 +182,11 @@ class Trainer:
         plt.show()
 
         fig = plt.figure()
-        plt.plot(self.history.history['accuracy'], color='teal', label='accuracy')
+        plt.plot(
+            self.history.history['accuracy'],
+            color='teal',
+            label='accuracy'
+        )
         fig.suptitle('Accuracy', fontsize=20)
         plt.legend(loc="upper left")
         plt.show()
