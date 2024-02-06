@@ -95,7 +95,7 @@ class Trainer:
             for class_name in class_directories:
                 file.write(class_name + '\n')
 
-    def build_neural_network_layers(self, model_choice):
+    def build_neural_network_layers(self):
         """
         Build the neural network layers based on the chosen model\
             configuration.
@@ -103,43 +103,23 @@ class Trainer:
         Args:
         - model_choice: Integer indicating the model configuration to use.
         """
-        if model_choice == 1:
-            self.model.add(Conv2D(16, 3, padding='same', activation='relu')),
-            self.model.add(MaxPooling2D()),
-            self.model.add(Conv2D(32, 3, padding='same', activation='relu')),
-            self.model.add(MaxPooling2D()),
-            self.model.add(Conv2D(64, 3, padding='same', activation='relu')),
-            self.model.add(MaxPooling2D()),
-            self.model.add(Flatten()),
-            self.model.add(Dense(128, activation='relu')),
-            self.model.add(Dense(8, activation='softmax')),
-        if model_choice == 2:
-            self.model.add(Conv2D(32, (3, 3), activation='relu',
-                                  input_shape=(256, 256, 3)))
-            self.model.add(MaxPooling2D(pool_size=(2, 2)))
-            self.model.add(Conv2D(64, (3, 3), activation='relu'))
-            self.model.add(MaxPooling2D(pool_size=(2, 2)))
-            self.model.add(Conv2D(128, (3, 3), activation='relu'))
-            self.model.add(MaxPooling2D(pool_size=(2, 2)))
-            self.model.add(Flatten())
-            self.model.add(Dense(512, activation='relu'))
-            self.model.add(Dropout(0.5))
-            self.model.add(Dense(256, activation='relu'))
-            self.model.add(Dropout(0.5))
-            self.model.add(Dense(8, activation='softmax'))
 
-        if model_choice == 3:
-            self.model.add(Conv2D(32, (3, 3), activation='relu',
-                                  input_shape=(128, 128, 3)))
-            self.model.add(MaxPooling2D((2, 2)))
-            self.model.add(Conv2D(64, (3, 3), activation='relu'))
-            self.model.add(MaxPooling2D((2, 2)))
-            self.model.add(Conv2D(128, (3, 3), activation='relu'))
-            self.model.add(MaxPooling2D((2, 2)))
-            self.model.add(Flatten())
-            self.model.add(Dense(128, activation='relu'))
-            self.model.add(Dense(64, activation='relu'))
-            self.model.add(Dense(8, activation='softmax'))
+        self.model.add(
+            Conv2D(
+                    32, (3, 3),
+                    activation='relu',
+                    input_shape=(128, 128, 3)
+                )
+            )
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(Conv2D(128, (3, 3), activation='relu'))
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(Flatten())
+        self.model.add(Dense(128, activation='relu'))
+        self.model.add(Dense(64, activation='relu'))
+        self.model.add(Dense(8, activation='softmax'))
 
         # learning_rate = 0.001
 
@@ -230,7 +210,7 @@ def main(args):
     trainer.save_classes(args.training_set)
     trainer.group_data()
     if (not args.model):
-        trainer.build_neural_network_layers(3)
+        trainer.build_neural_network_layers()
     if (args.epochs):
         trainer.start(args.epochs)
         trainer.plot_history()
