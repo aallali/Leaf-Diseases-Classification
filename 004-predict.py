@@ -7,11 +7,13 @@ import shutil
 from matplotlib import pyplot as plt
 import argparse
 from tqdm import tqdm
+from random import shuffle
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from tensorflow.keras.models import load_model  # noqa: E402
 
 MODEL = None  # load_model('models/model_26.h5')
 CLASSES = []
+IMG_SIZE = 128
 
 
 def plot_prediction(image, image_masked, class_name_prediction, img_path):
@@ -31,7 +33,11 @@ def plot_prediction(image, image_masked, class_name_prediction, img_path):
 
 def predict(img):
     image = np.array(img)
-    image_resize = cv2.resize(image, (128, 128), interpolation=cv2.INTER_AREA)
+    image_resize = cv2.resize(
+        image,
+        (IMG_SIZE, IMG_SIZE),
+        interpolation=cv2.INTER_AREA
+    )
     yhat = MODEL.predict(np.expand_dims(image_resize, axis=0), verbose=0)
     predicted_index = np.argmax(yhat)
     predicted_class = CLASSES[predicted_index]
@@ -44,27 +50,29 @@ def predict_folder(folder_path):
         os.walk(folder_path) for f in filenames
         if os.path.splitext(f)[1] == '.JPG'
     ]
+    shuffle(all_images)
+    all_images = all_images[:100]
+
     correctPredicts = 0
-    malPredicts = []
+
     for img_path in tqdm(all_images):
-        img_class = Options(img_path).class_name
+        img_class = os.path.basename(
+            os.path.dirname(img_path)
+        )
         img_predicted_class = predict_image(img_path=img_path, plot=False)
         if img_class == img_predicted_class:
             correctPredicts += 1
-        else:
-            malPredicts.append([img_class, img_predicted_class])
 
     percentage = 100 * float(correctPredicts)/float(len(all_images))
     percentage = round(percentage, 2)
     raw_percentage = f"{correctPredicts}/{len(all_images)}"
     print(f"{raw_percentage} ({percentage}%) predicted correctly")
 
-    pass
+    return
 
 
 def predict_image(img_path, plot=True):
     IMG = img_path
-    result = []
     predictions = dict()
 
     options = Options(IMG, dest_path="./.temp_predict")
@@ -76,6 +84,9 @@ def predict_image(img_path, plot=True):
     transformer2.run_all()
 
     trans = {
+        'Original': cv2.imread(
+            transformer2.getPath("original")
+        ),
         'Gaussian_Blur': cv2.imread(
             transformer2.getPath("gaussian_blur")
         ),
@@ -95,7 +106,6 @@ def predict_image(img_path, plot=True):
 
     for t in trans:
         className = predict(trans[t])
-        result.append(t + ", classed as: " + className)
         if className in predictions:
             predictions[className] += 1
         else:
