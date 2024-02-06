@@ -7,13 +7,15 @@ import shutil
 from matplotlib import pyplot as plt
 import argparse
 from tqdm import tqdm
-from random import shuffle
+from random import shuffle, randint
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from tensorflow.keras.models import load_model  # noqa: E402
 
 MODEL = None  # load_model('models/model_26.h5')
 CLASSES = []
 IMG_SIZE = 128
+IMG_SIZE = 128
+TMP_FOLDER = f"./.temp_predict_{randint(10000, 90000)}_{randint(10000, 90000)}"
 
 
 def plot_prediction(image, image_masked, class_name_prediction, img_path):
@@ -75,7 +77,7 @@ def predict_image(img_path, plot=True):
     IMG = img_path
     predictions = dict()
 
-    options = Options(IMG, dest_path="./.temp_predict")
+    options = Options(IMG, dest_path=TMP_FOLDER)
     transformer = Transforner(options)
     transformer.mask()
 
@@ -85,7 +87,7 @@ def predict_image(img_path, plot=True):
 
     trans = {
         'Original': cv2.imread(
-            transformer2.getPath("original")
+            transformer.getPath("original")
         ),
         'Gaussian_Blur': cv2.imread(
             transformer2.getPath("gaussian_blur")
