@@ -151,12 +151,6 @@ class Trainer:
             metrics=['accuracy']
         )
 
-        self.model.compile(
-            optimizer='adam',
-            loss='categorical_crossentropy',
-            metrics=['accuracy']
-        )
-
     def start(self, epoch):
         """
         Start training the neural network.
