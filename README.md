@@ -1,11 +1,24 @@
 # Leaf-Diseases-Classification  🌿 (Leaffliction)
+## 📋 Table of contents
+- [Description](#-description)
+- [Setup Project](#-setup-project)
+- [Data Analysis](#-data-analysis)
+- [Data Augmentation](#-data-augmentation)
+- [Image Transformations](#-image-transformations)
+- [Classification](#-classification)
+- [Unit Tests](#-unit-tests)
+- [Lectures](#-lectures)
 
+## 👥 Group Members:
+  - [Abdellah Allali](https://www.linkedin.com/in/aallali/)
+  - [Abderrahmane Mya](https://www.linkedin.com/in/mya-abdu/)
+
+---
 ## 📜 Description
 
 This project focuses on computer vision applications related to plant leaf diseases. It encompasses tasks such as image dataset analysis, data augmentation, image transformations, and image classification to address various aspects of plant health in the context of leaf diseases.
 
-## 🛠️ Setup Project:
-
+## 🛠️ Setup Project
 To setup the project, you need to launch the following command:
 ```bash
 $> git clone https://github.com/aallali/Leaf-Diseases-Classification
@@ -16,13 +29,6 @@ $> source venv/bin/activate
 ```
 _note: python version used during the making of this project : `3.10.12`_
 
-## 📋 Table of contents
-
-- [Data Analysis](#-data-analysis)
-- [Data Augmentation](#-data-augmentation)
-- [Image Transformations](#-image-transformations)
-- [Classification](#-classification)
-- [Unit Tests](#-unit-tests)
 
 ## 📊 Data analysis
 
@@ -78,7 +84,7 @@ In this section, the **`002.Transformation.py`** program is crafted to harness t
 
 By incorporating these **transformations**, the program aims to preprocess **leaf images** effectively, extracting key features that contribute to accurate and meaningful **leaf classification**. The **[PlantCV library](https://plantcv.danforthcenter.org/)** serves as a powerful tool in this process, offering a range of functions for image analysis and transformation.
 
-#### ==> transform single given image and visualize the output
+#### 1. transform single given image and visualize the output
 
 ```shell
 $> ./002-Transformation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
@@ -86,7 +92,7 @@ $> ./002-Transformation.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
 ![image](https://i.imgur.com/93cM7F1.png)
 ![image](https://i.imgur.com/avuJHe7.png)
 
-#### ==> transform all images in given source folder to given destination folder
+#### 2. transform all images in given source folder to given destination folder
 ```shell
 $> ./002-Transformation.py augmented_datasets_train -dst="augmented_datasets_train_transformed"
 Source directory :  augmented_datasets_train
@@ -103,15 +109,80 @@ In the last phase, the development process includes the creation of two distinct
 ### 1- Train:
 Within the **`003-train.py`** program, augmented images are employed to discern the distinctive features of designated leaf diseases. This involves leveraging a Convolutional Neural Network (CNN) implemented using the Keras framework. The acquired learning outcomes are then stored and provided in the form of a compressed .zip archive.
 
-`comming soon...`
+#### 1.1 generate config file:
+to run our training model, we have to give it some params.
+let's generate the config.yml file first by this command:
+```shell
+> ./003-train.py -gc
+Default configuration file generated successfully.
+> ls -la config.yaml
+-rw-rw-r-- 1 allali allali 99 Feb  6 16:44 config.yaml
+```
+config.yml:
+```yml
+epochs: 5
+model: path/to/existing/trained/model.h5
+model_save_location: models
+training_set: /path/to/augmented_datasets_train_transformed
+```
+explanation:
+`epochs` : number of times to train the model
+`model` : if you have already trained a model and want to train over it again (set it to blank to start fresh)
+`model_save_location`  : location where the final trained model will be saved (default name `model.h5`)
+`training_set` : path to dataset location to train over
+#### 1.2 train your model:
+after setting your config.yml
+start the trainin with this command:
+```shell
+> ./003-train.py
+Found 79210 files belonging to 8 classes.
+Classes saved: ['Apple_Black_rot', 'Apple_healthy', 'Apple_rust', 'Apple_scab', 'Grape_Black_rot', 'Grape_Esca', 'Grape_healthy', 'Grape_spot']
+Epoch 1/10
+ 205/1980 [==>...........................] - ETA: 5:28 - loss: 1.5214 - accuracy: 0.4284
+```
+_`to reduce the hardware stressing, (like a laptop or low end PC), we stop the training for 60 seconds after every 10 epoches done, this will give some time for the hardware to take a rest and reduce the temperature 🔥 a little bit before start again, especially if you training the model on a GPU.`_
+
+_`+ at each pause (60s) we save the model for the current epoch 💾 reached, to keep a copy of the model in case something happend at the end, you find yourself with most recent model aquired. eg: model_progress_10.h5, model_progress_20.h5, ...`_
+at the end 2 files will b generated :
+- `labels.txt` : containg the calsses names
+- `model.h5` : containg the calsses names
+- `model_progress_{step}.h5` : containg the calsses names
+
+
 ### 2- Prediction:
 On the other hand, the **`004-predict.py`** program is designed to take a leaf image as its input. It not only displays the original image but also showcases its various transformations. Furthermore, the program makes predictions regarding the specific type of disease present in the given leaf.
-
+#### 2.1 Predict single leaf:
 ```shell
 ./004-predict.py dataset/Apple/Apple_healthy/image\ \(1337\).JPG
 ```
 ![predict](https://i.imgur.com/Mt1DhIn.png)
+#### 2.2 Predict batch of leafs:
+to test the accuracy of our model, we added another option to test over a batch of max 100 random image from a given folder recursively.
+you can use this command to run the prediction over our datasets.
+`$> clear && ./004-predict.py /path/to/folder -m model/model.h5`
 
+result of 8 random 100 images in `dataset/Apple folder`:
+```shell
+92/100 (92.0%) predicted correctly
+91/100 (91.0%) predicted correctly
+87/100 (87.0%) predicted correctly
+91/100 (91.0%) predicted correctly
+84/100 (84.0%) predicted correctly
+93/100 (93.0%) predicted correctly
+92/100 (92.0%) predicted correctly
+87/100 (87.0%) predicted correctly
+```
+result of 8 random 100 images in `dataset/Grape folder`:
+```shell
+88/100 (88.0%) predicted correctly
+86/100 (86.0%) predicted correctly
+86/100 (86.0%) predicted correctly
+86/100 (86.0%) predicted correctly
+86/100 (86.0%) predicted correctly
+86/100 (86.0%) predicted correctly
+85/100 (85.0%) predicted correctly
+87/100 (87.0%) predicted correctly
+```
 ```shell
 $ ./004-predict.py -h
 usage: 004-predict.py [-h] [-lb LABELS] [-m MODEL] image_path
@@ -128,9 +199,21 @@ options:
   -m MODEL, --model MODEL
                         /path/to/model.h5 (default: models/model.h5)
 ```
+
+### 3- final step:
+this step is not necessary for the concept realisation of CNN, but its required by the subject.
+after we trained our model let compress what we used to build/train our model in a zip file
+- created a folder and moved my dataset + labels + model
+```shell
+> ls model
+dataset  labels.txt  model.h5
+> zip -r model.zip model
+> ls -la model.zip
+-rw-rw-r-- 1 xxxxx xxxxx 184552738 Feb  6 15:38 model.zip
+```
 ---
 ## 🔬 Unit Tests:
-we tried to run as much unit tests as possible for program especially the helpers functions (`libft`)
+we tried to write as much unit tests as possible for the program especially the helpers functions (`libft`)
 - run all tests:
 ```commandline
 python3 -m unittest discover -s ./unittests -t .. -v
@@ -139,3 +222,8 @@ python3 -m unittest discover -s ./unittests -t .. -v
 ```commandline
 python3 -m unittest unittests/libft/test_ft_dict.py -v
 ```
+---
+
+## 📖 Lectures:
+
+Check [docs](./docs/) folder for lectures about classification
