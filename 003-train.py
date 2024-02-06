@@ -3,10 +3,12 @@ import os
 import argparse
 from matplotlib import pyplot as plt
 from libft import generate_config, load_config
+from time import sleep
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf  # noqa: E402
 
-# extract Objects from TensorFlow
+
+# ######## extract Objects from TensorFlow #########
 Adam = tf.keras.optimizers.Adam
 Sequential = tf.keras.models.Sequential
 Conv2D = tf.keras.layers.Conv2D
@@ -19,6 +21,23 @@ Dropout = tf.keras.layers.Dropout
 Precision = tf.keras.metrics.Precision
 Recall = tf.keras.metrics.Recall
 BinaryAccuracy = tf.keras.metrics.BinaryAccuracy
+
+Callback = tf.keras.callbacks.Callback
+###################################################
+
+
+class FitCallback(Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        if epoch != 0 and (epoch % 10) == 0:
+            print(f"Saving model at epoch {epoch}")
+            self.model.save(
+                os.path.join(
+                    "./models/progress",
+                    f"model_ep{epoch}.h5"
+                )
+            )
+            print(f"Sleeping for 60 seconds before epoch {epoch + 1}")
+            sleep(60)
 
 
 class Trainer:
@@ -145,7 +164,13 @@ class Trainer:
         Args:
         - epoch: Number of epochs for training.
         """
-        self.history = self.model.fit(self.train, epochs=epoch)
+        self.history = self.model.fit(
+            self.train,
+            epochs=epoch,
+            callbacks=[
+                FitCallback()
+            ]
+        )
 
     def save(self, path):
         """
