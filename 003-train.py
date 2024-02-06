@@ -32,8 +32,8 @@ class FitCallback(Callback):
             print(f"Saving model at epoch {epoch}")
             self.model.save(
                 os.path.join(
-                    "./models/progress",
-                    f"model_ep{epoch}.h5"
+                    "./models",
+                    f"model_progress_{epoch}.h5"
                 )
             )
             print(f"Sleeping for 60 seconds before epoch {epoch + 1}")
