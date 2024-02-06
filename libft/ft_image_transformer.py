@@ -109,7 +109,7 @@ class Transforner:
 
         # Create a binary threshold image from the 'b' channel
         b_thresh = pcv.threshold.binary(
-            gray_img=b, threshold=200, max_value=255, object_type="light"
+            gray_img=b, threshold=137, max_value=255, object_type="light"
         )
 
         # Logical OR operation on two binary images

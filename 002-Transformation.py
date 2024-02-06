@@ -29,6 +29,7 @@ def main():
     options = Options(src_path=args.src_path, dest_path=args.destination)
 
     if not options.isDir:
+        options = Options(src_path=args.src_path, dest_path="./tmp")
         print("Image name : ", options.image_name)
     else:
         print("Source directory : ", options.full_path)
