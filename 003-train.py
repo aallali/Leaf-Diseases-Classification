@@ -3,10 +3,12 @@ import os
 import argparse
 from matplotlib import pyplot as plt
 from libft import generate_config, load_config
+from time import sleep
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf  # noqa: E402
 
-# extract Objects from TensorFlow
+
+# ######## extract Objects from TensorFlow #########
 Adam = tf.keras.optimizers.Adam
 Sequential = tf.keras.models.Sequential
 Conv2D = tf.keras.layers.Conv2D
@@ -19,6 +21,23 @@ Dropout = tf.keras.layers.Dropout
 Precision = tf.keras.metrics.Precision
 Recall = tf.keras.metrics.Recall
 BinaryAccuracy = tf.keras.metrics.BinaryAccuracy
+
+Callback = tf.keras.callbacks.Callback
+###################################################
+
+
+class FitCallback(Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        if epoch != 0 and (epoch % 10) == 0:
+            print(f"Saving model at epoch {epoch}")
+            self.model.save(
+                os.path.join(
+                    "./models/progress",
+                    f"model_ep{epoch}.h5"
+                )
+            )
+            print(f"Sleeping for 60 seconds before epoch {epoch + 1}")
+            sleep(60)
 
 
 class Trainer:
@@ -50,8 +69,8 @@ class Trainer:
         - training: Percentage of data to use for training.
         - validation: Percentage of data to use for validation.
         """
-        train_size = int(len(self.data_set)*.95)
-        val_size = int(len(self.data_set)*.05)
+        train_size = int(len(self.data_set)*.8)
+        val_size = int(len(self.data_set)*.2)
 
         self.train = self.data_set.take(train_size)
         self.val = self.data_set.skip(train_size).take(val_size)
@@ -121,19 +140,6 @@ class Trainer:
             self.model.add(Dense(128, activation='relu'))
             self.model.add(Dense(64, activation='relu'))
             self.model.add(Dense(8, activation='softmax'))
-        if model_choice == 4:
-            # TODO: fix undefined variable Rescaling
-            self.model.add(Rescaling(1.0 / 255))
-            self.model.add(Conv2D(64, (3, 3), activation="relu"))
-            self.model.add(MaxPooling2D(2, 2))
-            self.model.add(Conv2D(64, (3, 3), activation="relu"))
-            self.model.add(MaxPooling2D(2, 2))
-            self.model.add(Conv2D(32, (1, 1), activation="relu"))
-            self.model.add(MaxPooling2D(2, 2))
-            self.model.add(Flatten())
-            self.model.add(Dense(512, activation="relu"))
-            self.model.add(Dense(256, activation="relu"))
-            self.model.add(Dense(8, activation="softmax"))
 
         learning_rate = 0.001
 
@@ -145,12 +151,6 @@ class Trainer:
             metrics=['accuracy']
         )
 
-        self.model.compile(
-            optimizer='adam',
-            loss='categorical_crossentropy',
-            metrics=['accuracy']
-        )
-
     def start(self, epoch):
         """
         Start training the neural network.
@@ -158,7 +158,13 @@ class Trainer:
         Args:
         - epoch: Number of epochs for training.
         """
-        self.history = self.model.fit(self.train, epochs=epoch)
+        self.history = self.model.fit(
+            self.train,
+            epochs=epoch,
+            callbacks=[
+                FitCallback()
+            ]
+        )
 
     def save(self, path):
         """
@@ -233,10 +239,15 @@ def main(args):
 
 if __name__ == "__main__":
     # Set up command-line argument parser
-    parser = argparse.ArgumentParser(description="Train a convolutional neural\
-                                     network")
-    parser.add_argument("-gc", "--generate-config", action="store_true",
-                        help="Generate a default configuration file")
+    parser = argparse.ArgumentParser(
+        description="Train a convolutional neural network"
+    )
+    parser.add_argument(
+        "-gc",
+        "--generate-config",
+        action="store_true",
+        help="Generate a default configuration file"
+    )
     args = parser.parse_args()
 
     if args.generate_config:
