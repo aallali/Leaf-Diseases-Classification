@@ -167,7 +167,7 @@ result of 8 random 100 images in `dataset/Apple folder`:
 91/100 (91.0%) predicted correctly
 87/100 (87.0%) predicted correctly
 91/100 (91.0%) predicted correctly
-84/100 (84.0%) predicted correctly
+96/100 (96.0%) predicted correctly
 93/100 (93.0%) predicted correctly
 92/100 (92.0%) predicted correctly
 87/100 (87.0%) predicted correctly
