@@ -1,1 +1,1 @@
-we will save the output of: `shasum model.zip` here
+9ef21b7d08c14cd081557fb6173003d791b1ebf5  model.zip
