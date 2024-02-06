@@ -121,19 +121,6 @@ class Trainer:
             self.model.add(Dense(128, activation='relu'))
             self.model.add(Dense(64, activation='relu'))
             self.model.add(Dense(8, activation='softmax'))
-        if model_choice == 4:
-            # TODO: fix undefined variable Rescaling
-            self.model.add(Rescaling(1.0 / 255))
-            self.model.add(Conv2D(64, (3, 3), activation="relu"))
-            self.model.add(MaxPooling2D(2, 2))
-            self.model.add(Conv2D(64, (3, 3), activation="relu"))
-            self.model.add(MaxPooling2D(2, 2))
-            self.model.add(Conv2D(32, (1, 1), activation="relu"))
-            self.model.add(MaxPooling2D(2, 2))
-            self.model.add(Flatten())
-            self.model.add(Dense(512, activation="relu"))
-            self.model.add(Dense(256, activation="relu"))
-            self.model.add(Dense(8, activation="softmax"))
 
         learning_rate = 0.001
 
