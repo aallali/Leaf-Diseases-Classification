@@ -51,13 +51,17 @@
             - Kernel Size: 3x3
             - Padding: 'same' (pad the input such that the output has the same height and width as the input)
             - Activation: ReLU
-            ![Alt text](./images/convolutional.png)
+            the picture down bellow doesnt take into account the activation relu which would turn negative numbers into 0.
+            ![Alt text](https://lh6.googleusercontent.com/gZxwFH6mQ5tPjz6LzVbOaNeVuR1NC-BnuemIWO41qnn7r1PvP4qzwXRWC1OJgo2_PD08qaqJ2-VCF3q9laeK885IJwK-dHhpLDkvRZrx4vxrbLDTsKD2iZYM5SFRq4A6XTklk7_h)
+
+            to better understand how this layer extracts patterns from the picture:
+            ![Alt text](https://gregorygundersen.com/image/cnns/41847277995.png)
 
         - **MaxPooling Layer 2:**
             - **Description**: This layer performs max pooling on the output of the previous convolutional layer. It reduces the spatial dimensions of the input by taking the maximum value within each window of size 2x2.
             - **Parameters**:
             - Pool Size: Default (2x2)
-            ![Alt text](./images/Maxpool2.png)
+            ![Alt text](https://production-media.paperswithcode.com/methods/MaxpoolSample2.png)
 
         - **Convolutional Layer 3:**
             - **Description**: Similar to the first convolutional layer, this layer performs a 2D convolution operation on the input data using 32 filters with a kernel size of 3x3. It also applies the ReLU activation function.
@@ -88,7 +92,7 @@
         - **Flatten Layer 7:**
             - **Description**: This layer flattens the input tensor into a one-dimensional vector, which is required before feeding it into a fully connected (dense) layer.
             - **Parameters**: None
-            ![Alt text](./images/Flatten.png)
+            ![Alt text](https://sds-platform-private.s3-us-east-2.amazonaws.com/uploads/73_blog_image_1.png)
 
         - **Dense Layer 8:**
             - **Description**: Fully connected layer with 128 neurons. It applies the ReLU activation function to introduce non-linearity into the network.
@@ -104,6 +108,7 @@
             - Activation: Softmax
 
     ![Alt text](https://www.researchgate.net/publication/339892439/figure/fig5/AS:871189681537032@1584719214501/A-schematic-illustration-of-the-convolutional-neural-network-CNN-architecture-The.png)
+    https://youtu.be/f0t-OCG79-U
 3. **Training:**
    - **Initiating Training:**
      - Using `fit` method to train the model on the training dataset.
