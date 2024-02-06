@@ -141,9 +141,9 @@ class Trainer:
             self.model.add(Dense(64, activation='relu'))
             self.model.add(Dense(8, activation='softmax'))
 
-        learning_rate = 0.001
+        # learning_rate = 0.001
 
-        optimizer = Adam(learning_rate=learning_rate)
+        optimizer = Adam()
 
         self.model.compile(
             optimizer=optimizer,
