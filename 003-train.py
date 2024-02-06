@@ -239,10 +239,15 @@ def main(args):
 
 if __name__ == "__main__":
     # Set up command-line argument parser
-    parser = argparse.ArgumentParser(description="Train a convolutional neural\
-                                     network")
-    parser.add_argument("-gc", "--generate-config", action="store_true",
-                        help="Generate a default configuration file")
+    parser = argparse.ArgumentParser(
+        description="Train a convolutional neural network"
+    )
+    parser.add_argument(
+        "-gc",
+        "--generate-config",
+        action="store_true",
+        help="Generate a default configuration file"
+    )
     args = parser.parse_args()
 
     if args.generate_config:
