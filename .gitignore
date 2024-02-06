@@ -161,6 +161,7 @@ images/
 test/
 
 models/
+model/
 
 *.JPG
 *.png
@@ -168,3 +169,5 @@ models/
 
 myenv
 config.yaml
+
+*.zip
