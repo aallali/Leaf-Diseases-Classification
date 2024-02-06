@@ -15,7 +15,7 @@ MODEL = None  # load_model('models/model_26.h5')
 CLASSES = []
 IMG_SIZE = 128
 IMG_SIZE = 128
-TMP_FOLDER = f"./.temp_predict_{randint(10000, 90000)}_{randint(10000, 90000)}"
+TMP_FOLDER = f"./.temp_{randint(10000, 90000)}_{randint(10000, 90000)}"
 
 
 def plot_prediction(image, image_masked, class_name_prediction, img_path):
