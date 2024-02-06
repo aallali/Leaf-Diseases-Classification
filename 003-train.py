@@ -69,8 +69,8 @@ class Trainer:
         - training: Percentage of data to use for training.
         - validation: Percentage of data to use for validation.
         """
-        train_size = int(len(self.data_set)*.95)
-        val_size = int(len(self.data_set)*.05)
+        train_size = int(len(self.data_set)*.8)
+        val_size = int(len(self.data_set)*.2)
 
         self.train = self.data_set.take(train_size)
         self.val = self.data_set.skip(train_size).take(val_size)
